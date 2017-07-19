@@ -47,6 +47,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.AccessibilityContentDescriptions;
 import com.android.settingslib.SignalIcon.MobileIconGroup;
 import com.android.settingslib.graph.SignalDrawable;
+import com.android.settingslib.mobile.MobileMappings;
 import com.android.settingslib.mobile.MobileMappings.Config;
 import com.android.settingslib.mobile.MobileStatusTracker;
 import com.android.settingslib.mobile.MobileStatusTracker.MobileStatus;
@@ -102,6 +103,13 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     private final String[] mMobileStatusHistory = new String[STATUS_HISTORY_SIZE];
     // Where to copy the next state into.
     private int mMobileStatusHistoryIndex;
+
+    private ImsManager mImsManager;
+    private FeatureConnector<ImsManager> mFeatureConnector;
+    private int mCallState = TelephonyManager.CALL_STATE_IDLE;
+
+    private static final String SHOW_FOURG_ICON =
+            "system:" + Settings.System.SHOW_FOURG_ICON;
 
     private final MobileStatusTracker.Callback mMobileCallback =
             new MobileStatusTracker.Callback() {
@@ -191,7 +199,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             SubscriptionInfo info,
             SubscriptionDefaults defaults,
             Looper receiverLooper,
-            CarrierConfigTracker carrierConfigTracker,
+    CarrierConfigTracker carrierConfigTracker,
             FeatureFlags featureFlags
     ) {
         super("MobileSignalController(" + info.getSubscriptionId() + ")", context,
@@ -228,6 +236,21 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                 info, mDefaults, mMobileCallback);
         mProviderModelBehavior = featureFlags.isCombinedStatusBarSignalIconsEnabled();
         mProviderModelSetting = featureFlags.isProviderModelSettingEnabled();
+
+        Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case SHOW_FOURG_ICON:
+                mConfig = Config.readConfig(mContext);
+                setConfiguration(mConfig);
+                notifyListeners();
+                break;
+            default:
+                break;
+        }
     }
 
     void setConfiguration(Config config) {
