@@ -37,6 +37,7 @@ import android.util.Log;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.SignalIcon.MobileIconGroup;
 import com.android.settingslib.graph.SignalDrawable;
+import com.android.settingslib.mobile.MobileMappings;
 import com.android.settingslib.mobile.MobileMappings.Config;
 import com.android.settingslib.mobile.MobileStatusTracker;
 import com.android.settingslib.mobile.MobileStatusTracker.MobileStatus;
@@ -59,6 +60,12 @@ import java.util.Map;
 public class MobileSignalController extends SignalController<MobileState, MobileIconGroup> {
     private static final SimpleDateFormat SSDF = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
     private static final int STATUS_HISTORY_SIZE = 64;
+
+    private static final String ROAMING_INDICATOR_ICON =
+            "system:" + Settings.System.ROAMING_INDICATOR_ICON;
+    private static final String SHOW_FOURG_ICON =
+            "system:" + Settings.System.SHOW_FOURG_ICON;
+
     private final TelephonyManager mPhone;
     private final CarrierConfigTracker mCarrierConfigTracker;
     private final SubscriptionDefaults mDefaults;
@@ -158,6 +165,22 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             }
         };
         mMobileStatusTracker = mobileStatusTrackerFactory.createTracker(mMobileCallback);
+
+        Dependency.get(TunerService.class).addTunable(this, ROAMING_INDICATOR_ICON);
+        Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case SHOW_FOURG_ICON:
+                mConfig = Config.readConfig(mContext);
+                setConfiguration(mConfig);
+                notifyListeners();
+                break;
+            default:
+                break;
+        }
     }
 
     void setConfiguration(Config config) {
