@@ -85,6 +85,20 @@ public class MobileSignalController extends SignalController<
     @VisibleForTesting
     boolean mInflateSignalStrengths = false;
 
+    private ImsManager mImsManager;
+    private FeatureConnector<ImsManager> mFeatureConnector;
+    private int mCallState = TelephonyManager.CALL_STATE_IDLE;
+
+
+
+    private boolean mRoamingIconAllowed;
+    private boolean mShow4gForLte;
+
+    private static final String ROAMING_INDICATOR_ICON =
+            "system:" + Settings.System.ROAMING_INDICATOR_ICON;
+    private static final String SHOW_FOURG_ICON =
+            "system:" + Settings.System.SHOW_FOURG_ICON;
+
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
     public MobileSignalController(Context context, Config config, boolean hasMobileData,
@@ -121,6 +135,27 @@ public class MobileSignalController extends SignalController<
                 updateTelephony();
             }
         };
+
+        Dependency.get(TunerService.class).addTunable(this, ROAMING_INDICATOR_ICON);
+        Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case ROAMING_INDICATOR_ICON:
+                mRoamingIconAllowed =
+                    TunerService.parseIntegerSwitch(newValue, true);
+                updateTelephony();
+                break;
+            case SHOW_FOURG_ICON:
+                mShow4gForLte =
+                    TunerService.parseIntegerSwitch(newValue, false);
+                mapIconSets();
+                break;
+            default:
+                break;
+        }
     }
 
     public void setConfiguration(Config config) {
@@ -245,7 +280,7 @@ public class MobileSignalController extends SignalController<
         mNetworkToIconLookup.put(toIconKey(TelephonyManager.NETWORK_TYPE_HSPA), hGroup);
         mNetworkToIconLookup.put(toIconKey(TelephonyManager.NETWORK_TYPE_HSPAP), hPlusGroup);
 
-        if (mConfig.show4gForLte) {
+        if (mShow4gForLte) {
             mNetworkToIconLookup.put(toIconKey(
                     TelephonyManager.NETWORK_TYPE_LTE),
                     TelephonyIcons.FOUR_G);
