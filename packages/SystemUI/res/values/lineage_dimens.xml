@@ -26,5 +26,8 @@
     <dimen name="net_traffic_single_text_size">12dp</dimen>
     <dimen name="net_traffic_multi_text_size">8dp</dimen>
     <dimen name="net_traffic_txt_img_padding">2dp</dimen>
-    <dimen name="net_traffic_single_text_size_x">14dp</dimen>  
+    <dimen name="net_traffic_single_text_size_x">14dp</dimen>
+
+    <!-- OmniWeather image size -->
+    <dimen name="current_weather_image_size">42dp</dimen>
 </resources>
