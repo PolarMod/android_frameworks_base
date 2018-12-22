@@ -142,6 +142,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
     private boolean mMediaIsVisible;
     private SystemUIAppComponentFactory.ContextAvailableCallback mContextAvailableCallback;
 
+    private OmniJawsClient mWeatherClient;
+    private OmniJawsClient.WeatherInfo mWeatherInfo;
+    private OmniJawsClient.PackageInfo mPackageInfo;
+    private boolean mWeatherEnabled;
+    private boolean mShowWeatherSlice;
     /**
      * Receiver responsible for time ticking and updating the date format.
      */
@@ -295,6 +300,96 @@ public class KeyguardSliceProvider extends SliceProvider implements
         return mZenModeController.getZen() != Settings.Global.ZEN_MODE_OFF;
     }
 
+    protected void addWeather(ListBuilder builder) {
+        if (!mWeatherClient.isOmniJawsEnabled()) return;
+        if (!mWeatherEnabled || !mShowWeatherSlice || mWeatherInfo == null || mPackageInfo == null) {
+            return;
+        }
+        String temperatureText = mWeatherInfo.temp + " " + mWeatherInfo.tempUnits;
+        Icon conditionIcon = Icon.createWithResource(mPackageInfo.packageName, mPackageInfo.resourceID);
+        RowBuilder weatherRowBuilder = new RowBuilder(mWeatherUri)
+                .setTitle(temperatureText)
+                .addEndItem(IconCompat.createFromIcon(conditionIcon), ListBuilder.ICON_IMAGE);
+        builder.addRow(weatherRowBuilder);
+    }
+
+    @Override
+    public void weatherUpdated() {
+        queryAndUpdateWeather();
+        mContentResolver.notifyChange(mSliceUri, null /* observer */);
+    }
+
+    @Override
+    public void weatherError(int errorReason) {
+        if (DEBUG) Log.d(TAG, "weatherError " + errorReason);
+    }
+
+    private void queryAndUpdateWeather() {
+        try {
+            if (DEBUG) Log.d(TAG, "queryAndUpdateWeather.isOmniJawsEnabled " + mWeatherClient.isOmniJawsEnabled());
+            mWeatherClient.queryWeather();
+            mWeatherInfo = mWeatherClient.getWeatherInfo();
+            setPackageInfo();
+            if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mPackageName: " + mPackageInfo.packageName);
+            if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mDrawableResID: " + mPackageInfo.resourceID);
+        } catch(Exception e) {
+            // Do nothing
+        }
+    }
+
+    private void setPackageInfo() {
+        mPackageInfo = null;
+        if (mWeatherInfo != null){
+              Drawable conditionImage = mWeatherClient.getWeatherConditionImage(mWeatherInfo.conditionCode);
+              mPackageInfo = mWeatherClient.getPackageInfo();
+        }
+    }
+
+    private WeatherSettingsObserver mWeatherSettingsObserver;
+
+    private class WeatherSettingsObserver extends ContentObserver {
+        WeatherSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_WEATHER_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.OMNIJAWS_WEATHER_ICON_PACK),
+                    false, this, UserHandle.USER_ALL);
+
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_WEATHER_STYLE),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_WEATHER_ENABLED))) {
+                updateLockscreenWeather();
+                mContentResolver.notifyChange(mSliceUri, null /* observer */);
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.OMNIJAWS_WEATHER_ICON_PACK))) {
+                queryAndUpdateWeather();
+                mContentResolver.notifyChange(mSliceUri, null /* observer */);
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_WEATHER_STYLE))) {
+                updateLockscreenWeatherStyle();
+                mContentResolver.notifyChange(mSliceUri, null /* observer */);
+            }
+        }
+
+        public void updateLockscreenWeather() {
+            mWeatherEnabled = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
+        }
+
+        public void updateLockscreenWeatherStyle() {
+            mShowWeatherSlice = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_STYLE, 1, UserHandle.USER_CURRENT) != 0;
+        }
+    }
+
     @Override
     public boolean onCreateSliceProvider() {
         mContextAvailableCallback.onContextAvailable(getContext());
@@ -311,6 +406,14 @@ public class KeyguardSliceProvider extends SliceProvider implements
             mStatusBarStateController.addCallback(this);
             mNextAlarmController.addCallback(this);
             mZenModeController.addCallback(this);
+            mWeatherSettingsObserver = new WeatherSettingsObserver(mHandler);
+            mWeatherSettingsObserver.observe();
+            mWeatherClient = new OmniJawsClient(getContext());
+            mWeatherEnabled = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
+            mShowWeatherSlice = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_STYLE, 1, UserHandle.USER_CURRENT) != 0;
+            mWeatherClient.addSettingsObserver();
+            mWeatherClient.addObserver(this);
+            queryAndUpdateWeather();
             KeyguardSliceProvider.sInstance = this;
             registerClockUpdate();
             updateClockLocked();
