@@ -67,6 +67,7 @@ public final class AttestationHooks {
         if (GmsInfo.PACKAGE_GMS_CORE.equals(app.getPackageName()) &&
                 PROCESS_UNSTABLE.equals(Application.getProcessName())) {
             sIsGms = true;
+	    Log.d(TAG, "Spoofing build info for GMS");
             spoofBuildGms();
         }
     }
