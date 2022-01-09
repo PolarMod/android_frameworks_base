@@ -100,9 +100,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
 
     private static String TAG = "StatusBarKeyguardViewManager";
 
-    private static final String LOCKSCREEN_BLUR =
-            "system:" + Settings.System.LOCKSCREEN_BLUR;
-
     private float mLockScreenBlur;
 
     protected final Context mContext;
