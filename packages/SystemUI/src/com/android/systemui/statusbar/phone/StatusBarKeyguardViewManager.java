@@ -275,16 +275,11 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             mDockManager.addListener(mDockEventListener);
             mIsDocked = mDockManager.isDocked();
         }
-        mTunerService.addTunable(this, LOCKSCREEN_BLUR);
     }
 
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
-            case LOCKSCREEN_BLUR:
-                mLockScreenBlur =
-                    (float) TunerService.parseInteger(newValue, 0) / 100f;
-                break;
             default:
                 break;
         }
