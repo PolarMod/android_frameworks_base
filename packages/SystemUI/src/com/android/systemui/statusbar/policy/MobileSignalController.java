@@ -85,8 +85,6 @@ public class MobileSignalController extends SignalController<
     @VisibleForTesting
     boolean mInflateSignalStrengths = false;
 
-    private ImsManager mImsManager;
-    private FeatureConnector<ImsManager> mFeatureConnector;
     private int mCallState = TelephonyManager.CALL_STATE_IDLE;
 
 
