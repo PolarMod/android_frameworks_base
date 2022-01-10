@@ -89,11 +89,8 @@ public class MobileSignalController extends SignalController<
 
 
 
-    private boolean mRoamingIconAllowed;
     private boolean mShow4gForLte;
 
-    private static final String ROAMING_INDICATOR_ICON =
-            "system:" + Settings.System.ROAMING_INDICATOR_ICON;
     private static final String SHOW_FOURG_ICON =
             "system:" + Settings.System.SHOW_FOURG_ICON;
 
@@ -141,11 +138,6 @@ public class MobileSignalController extends SignalController<
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
-            case ROAMING_INDICATOR_ICON:
-                mRoamingIconAllowed =
-                    TunerService.parseIntegerSwitch(newValue, true);
-                updateTelephony();
-                break;
             case SHOW_FOURG_ICON:
                 mShow4gForLte =
                     TunerService.parseIntegerSwitch(newValue, false);
