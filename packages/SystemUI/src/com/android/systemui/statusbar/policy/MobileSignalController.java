@@ -36,6 +36,8 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.provider.Settings;
+import android.provider.Settings.Global;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.Utils;
@@ -46,6 +48,8 @@ import com.android.systemui.statusbar.policy.NetworkController.IconState;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.Config;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.SubscriptionDefaults;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.Dependency;
 
 import java.io.PrintWriter;
 import java.util.BitSet;
@@ -130,8 +134,6 @@ public class MobileSignalController extends SignalController<
                 updateTelephony();
             }
         };
-
-        Dependency.get(TunerService.class).addTunable(this, ROAMING_INDICATOR_ICON);
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
     }
 
