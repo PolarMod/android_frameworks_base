@@ -56,11 +56,7 @@ import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.VolumeTile;
-<<<<<<< HEAD
 import com.android.systemui.qs.tiles.VpnTile;
-=======
-import com.android.systemui.qs.tiles.WeatherTile;
->>>>>>> 796f81e1692b... base: add back weather parts [1/3]
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
@@ -109,14 +105,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<AntiFlickerTile> mAntiFlickerTileProvider;
-<<<<<<< HEAD
 
-=======
-    private final Provider<CPUInfoTile> mCPUInfoTileProvider;
-    private final Provider<FPSInfoTile> mFPSInfoTileProvider;
-    private final Provider<GamingModeTile> mGamingModeTileProvider;
-    private final Provider<WeatherTile> mWeatherTileProvider;
->>>>>>> 796f81e1692b... base: add back weather parts [1/3]
     private final Lazy<QSHost> mQsHostLazy;
 
     @Inject
@@ -152,16 +141,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<SyncTile> syncTileProvider,
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VolumeTile> volumeTileProvider,
-<<<<<<< HEAD
             Provider<VpnTile> vpnTileProvider,
             Provider<AntiFlickerTile> antiFlickerTileProvider) {
-=======
-            Provider<AntiFlickerTile> antiFlickerTileProvider,
-            Provider<CPUInfoTile> cpuInfoTileProvider,
-            Provider<FPSInfoTile> fpsInfoTileProvider,
-            Provider<GamingModeTile> gamingModeTileProvider,
-            Provider<WeatherTile> weatherTileProvider) {
->>>>>>> 796f81e1692b... base: add back weather parts [1/3]
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
@@ -196,13 +177,6 @@ public class QSFactoryImpl implements QSFactory {
         mVolumeTileProvider = volumeTileProvider;
         mVpnTileProvider = vpnTileProvider;
         mAntiFlickerTileProvider = antiFlickerTileProvider;
-<<<<<<< HEAD
-=======
-        mCPUInfoTileProvider = cpuInfoTileProvider;
-        mFPSInfoTileProvider = fpsInfoTileProvider;
-        mGamingModeTileProvider = gamingModeTileProvider;
-        mWeatherTileProvider = weatherTileProvider;
->>>>>>> 796f81e1692b... base: add back weather parts [1/3]
     }
 
     public QSTile createTile(String tileSpec) {
@@ -281,8 +255,6 @@ public class QSFactoryImpl implements QSFactory {
                 return mVpnTileProvider.get();
             case "anti_flicker":
                 return mAntiFlickerTileProvider.get();
-            case "weather":
-                return mWeatherTileProvider.get();
         }
 
         // Custom tiles
