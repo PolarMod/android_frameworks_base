@@ -70,6 +70,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import com.android.internal.util.polar.OmniJawsClient;
+import android.database.ContentObserver;
+
 /**
  * Simple Slice provider that shows the current date.
  */
