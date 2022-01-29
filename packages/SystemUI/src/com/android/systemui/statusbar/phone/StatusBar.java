@@ -4101,9 +4101,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     };
 
-    private SakuraSettingsObserver mSakuraSettingsObserver = new SakuraSettingsObserver(mHandler);
-    private class SakuraSettingsObserver extends ContentObserver {
-        SakuraSettingsObserver(Handler handler) {
+    private PolarSettingsObserver mPolarSettingsObserver = new PolarSettingsObserver(mHandler);
+    private class PolarSettingsObserver extends ContentObserver {
+        PolarSettingsObserver(Handler handler) {
             super(handler);
         }
          void observe() {
