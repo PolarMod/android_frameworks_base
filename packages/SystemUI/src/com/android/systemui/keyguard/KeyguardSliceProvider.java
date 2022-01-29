@@ -51,7 +51,7 @@ import androidx.slice.builders.ListBuilder.RowBuilder;
 import androidx.slice.builders.SliceAction;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.internal.util.sakura.OmniJawsClient;
+import com.android.internal.util.polar.OmniJawsClient;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.systemui.Dependency;
@@ -160,7 +160,6 @@ public class KeyguardSliceProvider extends SliceProvider implements
     private OmniJawsClient mWeatherClient;
     private OmniJawsClient.WeatherInfo mWeatherInfo;
     private OmniJawsClient.PackageInfo mPackageInfo;
-    private boolean mWeatherEnabled;
     private boolean mShowWeatherSlice;
     private boolean mServiceEnabled;
     private boolean mWeatherEnabled;
