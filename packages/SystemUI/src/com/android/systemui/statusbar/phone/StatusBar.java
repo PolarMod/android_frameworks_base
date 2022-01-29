@@ -68,6 +68,7 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
@@ -4110,10 +4111,6 @@ public class StatusBar extends SystemUI implements DemoMode,
          void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_STOPLIST_VALUES), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_DATAUSAGE),
                     false, this, UserHandle.USER_ALL);                    
         }
@@ -4122,28 +4119,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             update();
         }
          public void update() {
-            setHeadsUpStoplist();
-            setHeadsUpBlacklist();
+            //setHeadsUpStoplist();
+            //setHeadsUpBlacklist();
         }
-    }
-
-    private void setHeadsUpStoplist() {
-        if (mNotificationInterruptStateProvider != null)
-            mNotificationInterruptStateProvider.setHeadsUpStoplist();
-    }
-
-    private void setHeadsUpBlacklist() {
-        if (mNotificationInterruptStateProvider != null)
-            mNotificationInterruptStateProvider.setHeadsUpBlacklist();
-    }
-
-
-    private void setUseLessBoringHeadsUp() {
-        boolean lessBoringHeadsUp = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.LESS_BORING_HEADS_UP, 0,
-                UserHandle.USER_CURRENT) == 1;
-        if (mNotificationInterruptStateProvider != null)
-            mNotificationInterruptStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
     }
 
     public int getWakefulnessState() {
