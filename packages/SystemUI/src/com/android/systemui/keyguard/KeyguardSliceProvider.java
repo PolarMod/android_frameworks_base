@@ -87,7 +87,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
         SystemUIAppComponentFactory.ContextInitializer, OmniJawsClient.OmniJawsObserver {
 
     private String TAG = KeyguardSliceProvider.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final StyleSpan BOLD_STYLE = new StyleSpan(Typeface.BOLD);
     public static final String KEYGUARD_SLICE_URI = "content://com.android.systemui.keyguard/main";
@@ -319,8 +319,12 @@ public class KeyguardSliceProvider extends SliceProvider implements
     }
 
     protected void addWeather(ListBuilder builder) {
-        if (!mWeatherClient.isOmniJawsSetupDone()) return;
+        if (!mWeatherClient.isOmniJawsSetupDone()){
+            Log.w(TAG, "OmniJaws is not setupped!");
+            return;
+        }
         if (!mWeatherEnabled || mWeatherInfo == null || mPackageInfo == null) {
+            Log.w(TAG, "Weather disabled or not info/pakcage");
             return;
         }
         String temperatureText = mWeatherInfo.temp + " " + mWeatherInfo.tempUnits;
@@ -353,7 +357,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
                 if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mDrawableResID: " + mPackageInfo.resourceID);
             }
         } catch(Exception e) {
-            // Do nothing
+            Log.e(TAG, "Exception at queryAndUpdateWeather");
         }
     }
 
