@@ -43,13 +43,6 @@
     <!-- Daily data usage -->
     <dimen name="data_usage_padding_start">4dp</dimen>
 
-    <!-- OmniWeather image size -->
-    <dimen name="current_weather_image_size">42dp</dimen>
-
-    <!-- Weather condition icon  -->
-    <dimen name="weather_icon_size">24dp</dimen>
-
-
     <!-- Clear all notifications button -->
     <dimen name="dismiss_all_button_elevation">10dp</dimen>
     <dimen name="dismiss_all_button_height">55dp</dimen>
