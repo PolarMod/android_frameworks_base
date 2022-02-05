@@ -4955,7 +4955,11 @@ public final class Settings {
          */
         public static final String QS_DATAUSAGE = "qs_datausage";
 
-        
+        /**
+         * Wheter to show network traffic indicator in statusbar
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_STATE = "network_traffic_state"; 
 
         /**
          * Whether to show material Dismiss All Button for notifications
