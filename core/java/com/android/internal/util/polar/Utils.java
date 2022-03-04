@@ -275,6 +275,14 @@ public class Utils {
 
         NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if(mobile == null){
+          //We are likely to be dealing with tablet, so 
+          //return whether wifi is connected.
+          if(wifi == null){
+             return false; //Device without network interface(virtual machine?)
+          }
+          return wifi.isConnected();
+        }
         return wifi.isConnected() || mobile.isConnected();
     }
 
