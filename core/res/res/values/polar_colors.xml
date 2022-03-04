@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright 2006, The Android Open Source Project
@@ -12,8 +13,6 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-    <!-- toast icons -->
-￼    <color name="toast_bg">@color/white</color>
-￼    <color name="toast_text">@color/black</color>
+  <color name="toast_bg">@color/white</color>
+  <color name="toast_text">@color/black</color>
 </resources>
