@@ -553,21 +553,15 @@ public class FaceService extends BiometricServiceBase {
         // TODO: refactor out common code here
         @Override // Binder call
         public boolean isHardwareDetected(String opPackageName) {
-            Slog.d(TAG, "isHardwareDetected: called");
             checkPermission(USE_BIOMETRIC_INTERNAL);
             if (!canUseBiometric(opPackageName, false /* foregroundOnly */,
                     Binder.getCallingUid(), Binder.getCallingPid(),
                     UserHandle.getCallingUserId())) {
-                Slog.w(TAG, "Can not use biometrics!");
                 return false;
             }
 
             if (mCustomFaceService.isSupported()) {
-                Slog.d(TAG, "Custom face service is supported");
-                boolean hardware_detected = mCustomFaceService.isDetected();
-                if(!hardware_detected){
-                   Slog.w(TAG, "Failed to detect hardware for CustomFaceService");
-                }
+                return mCustomFaceService.isDetected();
             }
 
             final long token = Binder.clearCallingIdentity();
@@ -1390,9 +1384,8 @@ public class FaceService extends BiometricServiceBase {
     }
 
     private void checkPermission(String permission, String packageName) {
-        Slog.d(TAG, "checkPermission called");
         if (!mCustomFaceService.isSupported() || !mCustomFaceService.getServicePackageName().equals(packageName)) {
-          checkPermission(permission);
+            checkPermission(permission);
         }
     }
 
