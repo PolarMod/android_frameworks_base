@@ -56,15 +56,14 @@ class PrivacyItemController @Inject constructor(
     dumpManager: DumpManager
 ) : Dumpable {
 
-    companion object {
-       private lateinit var context: Context
+    @VisibleForTesting
+    internal companion object {
+        private lateinit var context: Context
 
         fun setContext(_context: Context) {
             context=_context
-        }
-    }
-    @VisibleForTesting
-    internal companion object {
+        } 
+        
         val OPS_MIC_CAMERA = intArrayOf(AppOpsManager.OP_CAMERA,
                 AppOpsManager.OP_PHONE_CALL_CAMERA, AppOpsManager.OP_RECORD_AUDIO,
                 AppOpsManager.OP_PHONE_CALL_MICROPHONE)
