@@ -327,7 +327,7 @@ class PrivacyItemController @Inject constructor(
             else -> return null
         }
 
-        val packagesPrivacyOverride = context.getStringArray(R.array.packages_privacy_override)
+        val packagesPrivacyOverride = context.resources.getStringArray(R.array.packages_privacy_override)
         if (appOpItem.packageName in packagesPrivacyOverride) {
             return null
         }  
