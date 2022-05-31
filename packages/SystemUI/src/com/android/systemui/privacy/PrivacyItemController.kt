@@ -327,6 +327,10 @@ class PrivacyItemController @Inject constructor(
             else -> return null
         }
 
+        if(context == null){
+            Log.e(TAG, "toPrivacyItem: no context available, returning null!")
+            return null
+        }
         val packagesPrivacyOverride = context.resources.getStringArray(R.array.packages_privacy_override)
         if (appOpItem.packageName in packagesPrivacyOverride) {
             return null
