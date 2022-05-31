@@ -37,6 +37,7 @@ import com.android.systemui.settings.UserTracker
 import com.android.systemui.util.DeviceConfigProxy
 import com.android.systemui.util.concurrency.DelayableExecutor
 import com.android.systemui.util.time.SystemClock
+import com.android.systemui.R
 import java.io.FileDescriptor
 import java.io.PrintWriter
 import java.lang.ref.WeakReference
@@ -55,6 +56,13 @@ class PrivacyItemController @Inject constructor(
     dumpManager: DumpManager
 ) : Dumpable {
 
+    companion object {
+       private lateinit var context: Context
+
+        fun setContext(_context: Context) {
+            context=_context
+        }
+    }
     @VisibleForTesting
     internal companion object {
         val OPS_MIC_CAMERA = intArrayOf(AppOpsManager.OP_CAMERA,
@@ -319,6 +327,11 @@ class PrivacyItemController @Inject constructor(
             AppOpsManager.OP_RECORD_AUDIO -> PrivacyType.TYPE_MICROPHONE
             else -> return null
         }
+
+        val packagesPrivacyOverride = context.getStringArray(R.array.packages_privacy_override)
+        if (appOpItem.packageName in packagesPrivacyOverride) {
+            return null
+        }  
         if (type == PrivacyType.TYPE_LOCATION && !locationAvailable) {
             return null
         }
