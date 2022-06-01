@@ -321,7 +321,7 @@ class PrivacyItemController @Inject constructor(
             AppOpsManager.OP_RECORD_AUDIO -> PrivacyType.TYPE_MICROPHONE
             else -> return null
         }
-        val packagesPrivacyOverride = userTracker.resources.getStringArray(R.array.packages_privacy_override)
+        val packagesPrivacyOverride = userTracker.getStringArray(R.array.packages_privacy_override)
         if (appOpItem.packageName in packagesPrivacyOverride) {
             return null
         }  
