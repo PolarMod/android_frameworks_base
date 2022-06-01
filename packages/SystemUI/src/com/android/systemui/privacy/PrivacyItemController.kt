@@ -58,13 +58,7 @@ class PrivacyItemController @Inject constructor(
 ) : Dumpable {
 
     @VisibleForTesting
-    internal companion object {
-        private lateinit var context: Context
-
-        fun setContext(_context: Context) {
-            context=_context
-        } 
-        
+    internal companion object {        
         val OPS_MIC_CAMERA = intArrayOf(AppOpsManager.OP_CAMERA,
                 AppOpsManager.OP_PHONE_CALL_CAMERA, AppOpsManager.OP_RECORD_AUDIO,
                 AppOpsManager.OP_PHONE_CALL_MICROPHONE)
@@ -327,12 +321,7 @@ class PrivacyItemController @Inject constructor(
             AppOpsManager.OP_RECORD_AUDIO -> PrivacyType.TYPE_MICROPHONE
             else -> return null
         }
-
-        if(context == null){
-            Log.e(TAG, "toPrivacyItem: no context available, returning null!")
-            return null
-        }
-        val packagesPrivacyOverride = context.resources.getStringArray(R.array.packages_privacy_override)
+        val packagesPrivacyOverride = getApplicationContext().resources.getStringArray(R.array.packages_privacy_override)
         if (appOpItem.packageName in packagesPrivacyOverride) {
             return null
         }  
