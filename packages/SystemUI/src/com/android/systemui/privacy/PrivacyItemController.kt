@@ -322,7 +322,7 @@ class PrivacyItemController @Inject constructor(
             else -> return null
         }
         val packagesPrivacyOverride = userTracker.userContext.resources.getStringArray(R.array.packages_privacy_override)
-        Log.d(TAG, appOpItem)
+        Log.d(TAG, appOpItem.packageName)
         if (appOpItem.packageName in packagesPrivacyOverride) {
             return null
         }  
