@@ -29,7 +29,7 @@ droidbuild_postrun(){
   exec "touch $OUT_FILE"
   echo "<resources>" >> $OUT_FILE
   echo '<string-array name="packages_privacy_override">' >> $OUT_FILE
-  for package in $TARGET_PRIVACY_OVERRIDE_PACKAGES; do
+  for package in ${TARGET_PRIVACY_OVERRIDE_PACKAGES[@]}; do
     info "Adding $package"
     echo "<item>$package</item>" >> $OUT_FILE
   done
