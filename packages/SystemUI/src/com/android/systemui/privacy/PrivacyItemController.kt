@@ -324,8 +324,11 @@ class PrivacyItemController @Inject constructor(
         val packagesPrivacyOverride = userTracker.userContext.resources.getStringArray(R.array.packages_privacy_override)
         Log.d(TAG, appOpItem.packageName)
         if (appOpItem.packageName in packagesPrivacyOverride) {
+            Log.d(TAG, "Overriding privacy item for " + appOpItem.packageName)
             return null
-        }  
+        } else {
+            Log.d(TAG, appOpItem.packageName + "is not in privacy overriding list")
+        }
         if (type == PrivacyType.TYPE_LOCATION && !locationAvailable) {
             return null
         }
