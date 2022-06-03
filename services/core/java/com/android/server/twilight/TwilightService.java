@@ -299,7 +299,6 @@ public final class TwilightService extends SystemService
     public void onProviderDisabled(String provider) {
     }
 
-    @Override
     public void onUserUnlocked(int userHandle) {
         mSharedPreferences = getContext().getSharedPreferences(
                 new File(Environment.getUserSystemDirectory(
