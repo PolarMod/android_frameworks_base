@@ -148,8 +148,12 @@ class PrivacyItemController @Inject constructor(
             packageName: String,
             active: Boolean
         ) {
+            val privacyOverride = userTracker.userContext.resources.getStringArray(R.array.packages_privacy_override)
             // Check if we care about this code right now
             if (code in OPS_LOCATION && !locationAvailable) {
+                return
+            }
+            if (packageName in privacyOverride){
                 return
             }
             val userId = UserHandle.getUserId(uid)
