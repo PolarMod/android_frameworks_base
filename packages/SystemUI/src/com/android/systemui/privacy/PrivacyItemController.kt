@@ -154,6 +154,7 @@ class PrivacyItemController @Inject constructor(
                 return
             }
             if (packageName in privacyOverride){
+                Log.d(TAG, packageName + "is in privacy override list")
                 return
             }
             val userId = UserHandle.getUserId(uid)
