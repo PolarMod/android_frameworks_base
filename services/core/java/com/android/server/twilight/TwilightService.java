@@ -300,7 +300,7 @@ public final class TwilightService extends SystemService
     }
 
     @Override
-    public void onUnlockUser(int userHandle) {
+    public void onUserUnlocked(int userHandle) {
         mSharedPreferences = getContext().getSharedPreferences(
                 new File(Environment.getUserSystemDirectory(
                         userHandle), PREF_FILE_NAME), Context.MODE_PRIVATE);
