@@ -5310,4 +5310,6 @@
 
     <integer name="config_chooser_max_targets_per_row">4</integer>
      
+    <!-- Face unlock -->
+    <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 </resources>
