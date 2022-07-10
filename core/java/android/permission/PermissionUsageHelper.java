@@ -603,7 +603,7 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
 
     private boolean shouldShowPackage(String packageName) {
         String[] overridenPackages = mContext.getResources().getStringArray(R.array.packages_privacy_override);
-	for(_package : overridenPackages){
+	for(String _package : overridenPackages){
 		if(_package.equals(packageName)){
 			return false;
 		}
