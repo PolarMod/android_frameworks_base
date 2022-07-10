@@ -52,6 +52,8 @@ import android.telephony.TelephonyManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
+import com.android.internal.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -600,7 +602,13 @@ public class PermissionUsageHelper implements AppOpsManager.OnOpActiveChangedLis
     }
 
     private boolean shouldShowPackage(String packageName) {
-        return PermissionManager.shouldShowPackageForIndicatorCached(mContext, packageName);
+        String[] overridenPackages = mContext.getResources().getStringArray(R.array.packages_privacy_override);
+	for(_package : overridenPackages){
+		if(_package.equals(packageName)){
+			return false;
+		}
+	}
+	return PermissionManager.shouldShowPackageForIndicatorCached(mContext, packageName);
     }
 
     /**
