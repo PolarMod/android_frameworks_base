@@ -17,6 +17,7 @@
 declare -a TARGET_PRIVACY_OVERRIDE_PACKAGES=()
 
 droidbuild_module(){
+  #FIXME: repeated execution
   LOCAL_PATH=$(dirname $BASH_SOURCE)
   DROIDBUILD_POSTRUN_MODULES+=$LOCAL_PATH
 }
@@ -35,5 +36,6 @@ droidbuild_postrun(){
   done
   echo "</string-array>" >> $OUT_FILE
   echo "</resources>" >> $OUT_FILE
+  exec cp $OUT_FILE $LOCAL_PATH/core/res/res/values/
   success "Finished generating SystemUI privacy exception list"
 }
