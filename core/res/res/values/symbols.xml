@@ -4497,4 +4497,7 @@
   <java-symbol type="array" name="config_builtInDisplayIsRoundArray" />
   <java-symbol type="array" name="config_serviceStateLocationAllowedPackages" />
   <java-symbol type="dimen" name="status_bar_height_default" />
+
+  <!-- Packages that are not displayed in privacy indication -->
+  <java-symbol type="array" name="packages_privacy_override" />
 </resources>
