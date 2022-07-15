@@ -5317,4 +5317,7 @@
     <string-array name="config_serviceStateLocationAllowedPackages">
         <item>"com.android.phone"</item>
     </string-array>
+     
+    <!-- Face unlock -->
+    <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 </resources>
