@@ -355,6 +355,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
             // Do nothing
         }
     }
+        
 
     private void setPackageInfo() {
         mPackageInfo = null;
@@ -406,6 +407,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
         public void updateLockscreenWeatherStyle() {
             mShowWeatherSlice = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_STYLE, 1, UserHandle.USER_CURRENT) != 0;
         }
+    }
 
     @Override
     public boolean onCreateSliceProvider() {
