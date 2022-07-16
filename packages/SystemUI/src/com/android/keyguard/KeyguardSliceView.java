@@ -270,7 +270,6 @@ public class KeyguardSliceView extends LinearLayout {
         mIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.widget_icon_size);
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
         mWeatherIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.weather_icon_size);
-    }
 
         for (int i = 0; i < mRow.getChildCount(); i++) {
             View child = mRow.getChildAt(i);
