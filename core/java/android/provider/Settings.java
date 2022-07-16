@@ -5339,11 +5339,11 @@ public final class Settings {
          * @hide
          */
         public static final String USE_OLD_MOBILETYPE = "use_old_mobiletype";
-
-       /**
-	* Force use black color as statusbar background.
-	* @hide
-	*/
+                
+        /**
+	 * Force use black color as statusbar background.
+	 * @hide
+	 */
         public static final String FORCE_BLACK_STATUSBAR = "force_black_statusbar";	
        
 	/**
