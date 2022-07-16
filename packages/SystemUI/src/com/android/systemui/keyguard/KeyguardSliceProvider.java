@@ -164,7 +164,6 @@ public class KeyguardSliceProvider extends SliceProvider implements
     private boolean mShowWeatherSlice;
     private boolean mServiceEnabled;
     private boolean mWeatherEnabled;
-    private boolean mShowWeatherSlice;
 
     /**
      * Receiver responsible for time ticking and updating the date format.
@@ -347,12 +346,14 @@ public class KeyguardSliceProvider extends SliceProvider implements
 
     private void queryAndUpdateWeather() {
         try {
-            if (DEBUG) Log.d(TAG, "queryAndUpdateWeather.isOmniJawsEnabled " + mWeatherClient.isOmniJawsEnabled());
-            mWeatherClient.queryWeather();
-            mWeatherInfo = mWeatherClient.getWeatherInfo();
-            setPackageInfo();
-            if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mPackageName: " + mPackageInfo.packageName);
-            if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mDrawableResID: " + mPackageInfo.resourceID);
+            if (DEBUG) Log.d(TAG, "queryAndUpdateWeather.isOmniJawsSetupDone " + mWeatherClient.isOmniJawsSetupDone());
+            if (mWeatherClient.isOmniJawsSetupDone()) {
+                mWeatherClient.queryWeather();
+                mWeatherInfo = mWeatherClient.getWeatherInfo();
+                setPackageInfo();
+                if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mPackageName: " + mPackageInfo.packageName);
+                if (DEBUG) Log.w(TAG, "queryAndUpdateWeather mDrawableResID: " + mPackageInfo.resourceID);
+            }
         } catch(Exception e) {
             // Do nothing
         }
@@ -360,12 +361,11 @@ public class KeyguardSliceProvider extends SliceProvider implements
 
     private void setPackageInfo() {
         mPackageInfo = null;
-        if (mWeatherInfo != null){
+        if (mWeatherClient != null && mWeatherInfo != null){
               Drawable conditionImage = mWeatherClient.getWeatherConditionImage(mWeatherInfo.conditionCode);
               mPackageInfo = mWeatherClient.getPackageInfo();
         }
     }
-
     private WeatherSettingsObserver mWeatherSettingsObserver;
 
     private class WeatherSettingsObserver extends ContentObserver {
@@ -397,6 +397,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
                 mContentResolver.notifyChange(mSliceUri, null /* observer */);
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_WEATHER_STYLE))) {
                 updateLockscreenWeatherStyle();
+                setPackageInfo();
                 mContentResolver.notifyChange(mSliceUri, null /* observer */);
             }
         }
@@ -431,11 +432,13 @@ public class KeyguardSliceProvider extends SliceProvider implements
             mWeatherSettingsObserver = new WeatherSettingsObserver(mHandler);
             mWeatherSettingsObserver.observe();
             mWeatherClient = new OmniJawsClient(getContext());
-            mWeatherEnabled = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
-            mShowWeatherSlice = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_WEATHER_STYLE, 1, UserHandle.USER_CURRENT) != 0;
-            mWeatherClient.addSettingsObserver();
-            mWeatherClient.addObserver(this);
-            queryAndUpdateWeather();
+            mServiceEnabled = mWeatherClient.isOmniJawsEnabled();
+            Log.w(TAG, "onCreateSliceProvider:  mServiceEnabled = " + mServiceEnabled);
+            if (mServiceEnabled) {
+                mWeatherClient.addSettingsObserver();
+                mWeatherClient.addObserver(this);
+                queryAndUpdateWeather();
+            }
             KeyguardSliceProvider.sInstance = this;
             registerClockUpdate();
             updateClockLocked();
