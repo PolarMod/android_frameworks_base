@@ -44,8 +44,8 @@ import android.widget.Toast;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-import com.android.internal.util.crdroid.OmniJawsClient;
-import com.android.internal.util.crdroid.Utils;
+import com.android.internal.util.polar.weather.OmniJawsClient;
+import com.android.internal.util.polar.Utils;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.plugins.ActivityStarter;
