@@ -85,7 +85,7 @@ public class Utils {
 
     public static boolean isWifiOnly(Context context) {
         PackageManager pm = context.getPackageManager(); 
-        return !pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
+        return !pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
     }
 
     // Check to see if device supports the Fingerprint scanner
