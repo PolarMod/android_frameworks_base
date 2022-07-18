@@ -171,13 +171,13 @@ public class KeyguardSliceView extends LinearLayout {
             KeyguardSliceTextView button = mRow.findViewWithTag(itemTag);
             if (button == null) {
                 button = new KeyguardSliceTextView(mContext);
-                button.setShouldTintDrawable(!isWeatherSlice);
+//                button.setShouldTintDrawable(!isWeatherSlice);
                 button.setTextColor(blendedColor);
                 button.setTag(itemTag);
                 final int viewIndex = i - (mHasHeader ? 1 : 0);
                 mRow.addView(button, viewIndex);
             } else {
-                button.setShouldTintDrawable(!isWeatherSlice);
+//                button.setShouldTintDrawable(!isWeatherSlice);
             }
 
             PendingIntent pendingIntent = null;

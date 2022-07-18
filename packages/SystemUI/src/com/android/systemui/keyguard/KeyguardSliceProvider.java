@@ -88,8 +88,6 @@ public class KeyguardSliceProvider extends SliceProvider implements
     private String TAG = KeyguardSliceProvider.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final String TAG = "KgdSliceProvider";
-
     private static final StyleSpan BOLD_STYLE = new StyleSpan(Typeface.BOLD);
     public static final String KEYGUARD_SLICE_URI = "content://com.android.systemui.keyguard/main";
     private static final String KEYGUARD_HEADER_URI =
