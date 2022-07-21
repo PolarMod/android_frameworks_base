@@ -30,6 +30,8 @@ import android.os.Binder;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.util.Log;
+import android.os.SystemProperties;
 
 import com.android.internal.gmscompat.GmsHooks;
 import com.android.internal.gmscompat.GmsInfo;
@@ -133,6 +135,12 @@ public final class GmsCompat {
         if (isPrivileged) {
             return false;
         }
+       
+	//ROM has disabled GMS support
+	if (!SystemProperties.getBoolean("ro.system.gms_compat", false)){
+		Log.w(TAG, "System does not supports GmsCompat, ignoring isGmsApp request");
+		return false;
+	}
 
         switch (packageName) {
             case GmsInfo.PACKAGE_GSF:
