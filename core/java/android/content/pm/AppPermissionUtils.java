@@ -31,7 +31,6 @@ public class AppPermissionUtils {
         if (StorageScopesAppHooks.shouldSpoofSelfPermissionCheck(permName)) {
             return true;
         }
-
         if (Manifest.permission.INTERNET.equals(permName)
                 && SpecialRuntimePermAppUtils.requestsInternetPermission()
                 && !SpecialRuntimePermAppUtils.awareOfRuntimeInternetPermission())
