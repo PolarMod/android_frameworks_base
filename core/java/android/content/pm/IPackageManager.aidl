@@ -803,4 +803,12 @@ interface IPackageManager {
     void setKeepUninstalledPackages(in List<String> packageList);
 
     boolean canPackageQuery(String sourcePackageName, String targetPackageName, int userId);
+
+    int getSpecialRuntimePermissionFlags(String packageName);
+
+    android.content.pm.GosPackageState getGosPackageState(String packageName, int userId);
+
+    android.content.pm.GosPackageState setGosPackageState(String packageName, int flags, in byte[] storageScopes, boolean killUid, int userId);
+
+    void skipSpecialRuntimePermissionAutoGrantsForPackage(String packageName, int userId, in List<String> permissions);
 }
