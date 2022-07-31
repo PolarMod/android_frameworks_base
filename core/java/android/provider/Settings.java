@@ -37,7 +37,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.app.WallpaperManager;
-import android.app.compat.gms.GmsCompat;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -94,7 +93,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.Editor;
 
 import com.android.internal.annotations.GuardedBy;
-import com.android.internal.gmscompat.GmsCompatApp;
 import com.android.internal.util.Preconditions;
 import com.android.internal.widget.ILockSettings;
 
@@ -2994,31 +2992,9 @@ public final class Settings {
                     mReadableFieldsWithMaxTargetSdk);
         }
 
-        // Returns last path component of the relevant Uri.
-        // Keep in sync with GmsCompatApp#registerObserver
-        private String maybeGetGmsCompatNamespace() {
-            Uri uri = mUri;
-            // no need to use expensive equals() method in this case
-            if (uri == Global.CONTENT_URI) {
-                return "global";
-            }
-            if (uri == Secure.CONTENT_URI) {
-                return "secure";
-            }
-            return null;
-        }
-
         public boolean putStringForUser(ContentResolver cr, String name, String value,
                 String tag, boolean makeDefault, final int userHandle,
                 boolean overrideableByRestore) {
-            if (GmsCompat.isEnabled()) {
-                String ns = maybeGetGmsCompatNamespace();
-                if (ns != null && !mAllFields.contains(name)) {
-                    return GmsCompatApp.putString(ns, name, value);
-                }
-                return false;
-            }
-
             try {
                 Bundle arg = new Bundle();
                 arg.putString(Settings.NameValueTable.VALUE, value);
@@ -3079,15 +3055,6 @@ public final class Settings {
 
         @UnsupportedAppUsage
         public String getStringForUser(ContentResolver cr, String name, final int userHandle) {
-            if (GmsCompat.isEnabled()) {
-                String ns = maybeGetGmsCompatNamespace();
-                if (ns != null) {
-                    if (!mAllFields.contains(name) && !name.startsWith("gmscompat")) {
-                        return GmsCompatApp.getString(ns, name);
-                    }
-                }
-            }
-
             // Check if the target settings key is readable. Reject if the caller is not system and
             // is trying to access a settings key defined in the Settings.Secure, Settings.System or
             // Settings.Global and is not annotated as @Readable.
@@ -3095,10 +3062,6 @@ public final class Settings {
             // still be regarded as readable.
             if (!isCallerExemptFromReadableRestriction() && mAllFields.contains(name)) {
                 if (!mReadableFields.contains(name)) {
-                    if (GmsCompat.isEnabled()) {
-                        return null;
-                    }
-
                     throw new SecurityException(
                             "Settings key: <" + name + "> is not readable. From S+, settings keys "
                                     + "annotated with @hide are restricted to system_server and "
@@ -3115,10 +3078,6 @@ public final class Settings {
                                 && application.getApplicationInfo().targetSdkVersion
                                 <= maxTargetSdk;
                         if (!targetSdkCheckOk) {
-                            if (GmsCompat.isEnabled()) {
-                                return null;
-                            }
-
                             throw new SecurityException(
                                     "Settings key: <" + name + "> is only readable to apps with "
                                             + "targetSdkVersion lower than or equal to: "
@@ -5196,19 +5155,6 @@ public final class Settings {
         public static final String ACCELEROMETER_ROTATION = "accelerometer_rotation";
 
         /**
-         * Control the type of rotation which can be performed using the accelerometer
-         * if ACCELEROMETER_ROTATION is enabled.
-         * Value is a bitwise combination of
-         * 1 = 0 degrees (portrait)
-         * 2 = 90 degrees (left)
-         * 4 = 180 degrees (inverted portrait)
-         * 8 = 270 degrees (right)
-         * Setting to 0 is effectively orientation lock
-         * @hide
-         */
-        public static final String ACCELEROMETER_ROTATION_ANGLES = "accelerometer_rotation_angles";
-
-        /**
          * Default screen rotation when no other policy applies.
          * When {@link #ACCELEROMETER_ROTATION} is zero and no on-screen Activity expresses a
          * preference, this rotation value will be used. Must be one of the
@@ -5518,20 +5464,6 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
-         * GameSpace: List of added games by user
-         * @hide
-         */
-        @Readable
-        public static final String GAMESPACE_GAME_LIST = "gamespace_game_list";
-
-        /**
-         * GameSpace: Whether fullscreen intent will be suppressed while in game session
-         * @hide
-         */
-        @Readable
-        public static final String GAMESPACE_SUPPRESS_FULLSCREEN_INTENT = "gamespace_suppress_fullscreen_intent";
-
-        /**
          * Whether lock-to-app will be triggered by long-press on recents.
          * @hide
          */
@@ -5576,27 +5508,11 @@ public final class Settings {
         public static final String DESKTOP_MODE = "desktop_mode";
 
         /**
-         * Volume keys control cursor in text fields (default is 0)
-         * 0 - Disabled
-         * 1 - Volume up/down moves cursor left/right
-         * 2 - Volume up/down moves cursor right/left
-         * @hide
-         */
-        @Readable
-        public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-
-        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
          */
-
-        /**
-         * Three Finger Gesture
-         * @hide
-         */
-        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -6075,11 +5991,6 @@ public final class Settings {
                 sProviderHolder,
                 Secure.class);
 
-        /** @hide */
-        public static boolean isKnownKey(String key) {
-            return sNameValueCache.mAllFields.contains(key);
-        }
-
         private static ILockSettings sLockSettings = null;
 
         private static boolean sIsSystemProcess;
@@ -6088,13 +5999,10 @@ public final class Settings {
         @UnsupportedAppUsage
         private static final HashSet<String> MOVED_TO_GLOBAL;
         static {
-            MOVED_TO_LOCK_SETTINGS = new HashSet<>(6);
+            MOVED_TO_LOCK_SETTINGS = new HashSet<>(3);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
-            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_SIZE);
-            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_DOTS_VISIBLE);
-            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_SHOW_ERROR_PATH);
 
             MOVED_TO_GLOBAL = new HashSet<>();
             MOVED_TO_GLOBAL.add(Settings.Global.ADB_ENABLED);
@@ -7422,24 +7330,6 @@ public final class Settings {
         @Readable
         public static final String
                 LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
-
-        /**
-         * Determines the width and height of the LockPatternView widget
-         * @hide
-         */
-        public static final String LOCK_PATTERN_SIZE = "lock_pattern_size";
-
-        /**
-         * Whether lock pattern will show dots (0 = false, 1 = true)
-         * @hide
-         */
-        public static final String LOCK_DOTS_VISIBLE = "lock_pattern_dotsvisible";
-
-        /**
-         * Whether lockscreen error pattern is visible (0 = false, 1 = true)
-         * @hide
-         */
-        public static final String LOCK_SHOW_ERROR_PATH = "lock_pattern_show_error_path";
 
         /**
          * This preference allows the device to be locked given time after screen goes off,
@@ -16106,11 +15996,6 @@ public final class Settings {
                     sProviderHolder,
                     Global.class);
 
-        /** @hide */
-        public static boolean isKnownKey(String key) {
-            return sNameValueCache.mAllFields.contains(key);
-        }
-
         // Certain settings have been moved from global to the per-user secure namespace
         @UnsupportedAppUsage
         private static final HashSet<String> MOVED_TO_SECURE;
@@ -17341,6 +17226,30 @@ public final class Settings {
          */
         public static final String REVIEW_PERMISSIONS_NOTIFICATION_STATE =
                 "review_permissions_notification_state";
+
+        /**
+         * Which server to use for attestation certificate rotation
+         * @hide
+         */
+        public static final String ATTEST_REMOTE_PROVISIONER_SERVER = "attest_remote_provisioner_server";
+
+        /**
+         * Which server to use for Broadcom GNSS almanacs
+         * @hide
+         */
+        public static final String PSDS_SERVER = "psds_server";
+
+        /**
+         * The amount of time in milliseconds before a disconnected Wi-Fi adapter is turned off
+         * @hide
+         */
+        public static final String WIFI_OFF_TIMEOUT = "wifi_off_timeout";
+
+        /**
+         * The amount of time in milliseconds before a disconnected Bluetooth adapter is turned off
+         * @hide
+         */
+        public static final String BLUETOOTH_OFF_TIMEOUT = "bluetooth_off_timeout";
 
         /**
          * Settings migrated from Wear OS settings provider.
