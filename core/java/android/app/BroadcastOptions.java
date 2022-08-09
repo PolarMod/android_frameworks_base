@@ -21,7 +21,6 @@ import android.annotation.Nullable;
 import android.annotation.RequiresPermission;
 import android.annotation.SystemApi;
 import android.annotation.TestApi;
-import android.app.compat.gms.GmsCompat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerExemptionManager;
@@ -290,10 +289,6 @@ public class BroadcastOptions {
      */
     @RequiresPermission(android.Manifest.permission.START_ACTIVITIES_FROM_BACKGROUND)
     public void setBackgroundActivityStartsAllowed(boolean allowBackgroundActivityStarts) {
-        if (GmsCompat.isEnabled()) {
-            return;
-        }
-
         mAllowBackgroundActivityStarts = allowBackgroundActivityStarts;
     }
 
