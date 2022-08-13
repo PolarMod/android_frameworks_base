@@ -155,7 +155,6 @@ public final class SharedUserSetting extends SettingBase {
         // recalculate processes.
         updateProcesses();
         onChanged();
-        gosPackageStateCachedDerivedFlags = 0;
         return true;
     }
 
@@ -169,7 +168,6 @@ public final class SharedUserSetting extends SettingBase {
             setFlags(this.pkgFlags | packageSetting.pkgFlags);
             setPrivateFlags(this.pkgPrivateFlags | packageSetting.pkgPrivateFlags);
             onChanged();
-            gosPackageStateCachedDerivedFlags = 0;
         }
         if (packageSetting.pkg != null) {
             addProcesses(packageSetting.pkg.getProcesses());
@@ -281,7 +279,4 @@ public final class SharedUserSetting extends SettingBase {
         onChanged();
         return this;
     }
-
-    // guarded by PackageManagerService.mLock
-    int gosPackageStateCachedDerivedFlags;
 }

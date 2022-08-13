@@ -25,7 +25,6 @@ import android.annotation.Nullable;
 import android.annotation.UserIdInt;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.GosPackageStatePm;
 import android.content.pm.IncrementalStatesInfo;
 import android.content.pm.PackageManager.UninstallReason;
 import android.content.pm.PackageParser;
@@ -529,8 +528,7 @@ public abstract class PackageSettingBase extends SettingBase {
             boolean virtualPreload, String lastDisableAppCaller,
             ArraySet<String> enabledComponents, ArraySet<String> disabledComponents,
             int installReason, int uninstallReason, String harmfulAppWarning,
-            String splashScreenTheme,
-            GosPackageStatePm gosPackageState) {
+            String splashScreenTheme) {
         PackageUserState state = modifyUserState(userId);
         state.ceDataInode = ceDataInode;
         state.enabled = enabled;
@@ -550,7 +548,6 @@ public abstract class PackageSettingBase extends SettingBase {
         state.virtualPreload = virtualPreload;
         state.harmfulAppWarning = harmfulAppWarning;
         state.splashScreenTheme = splashScreenTheme;
-        state.gosPackageState = gosPackageState;
         onChanged();
     }
 
@@ -562,8 +559,7 @@ public abstract class PackageSettingBase extends SettingBase {
                 otherState.virtualPreload, otherState.lastDisableAppCaller,
                 otherState.enabledComponents, otherState.disabledComponents,
                 otherState.installReason, otherState.uninstallReason, otherState.harmfulAppWarning,
-                otherState.splashScreenTheme,
-                otherState.gosPackageState);
+                otherState.splashScreenTheme);
     }
 
     ArraySet<String> getEnabledComponents(int userId) {
@@ -801,16 +797,6 @@ public abstract class PackageSettingBase extends SettingBase {
     @Nullable
     public String getSplashScreenTheme(@UserIdInt int userId) {
         return readUserState(userId).splashScreenTheme;
-    }
-
-    public void setGosPackageState(@UserIdInt int userId, @Nullable GosPackageStatePm state) {
-        modifyUserState(userId).gosPackageState = state;
-        onChanged();
-    }
-
-    @Nullable
-    public GosPackageStatePm getGosPackageState(@UserIdInt int userId) {
-        return readUserState(userId).gosPackageState;
     }
 
     /**

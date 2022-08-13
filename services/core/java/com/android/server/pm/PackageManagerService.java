@@ -173,7 +173,6 @@ import android.content.pm.ComponentInfo;
 import android.content.pm.DataLoaderType;
 import android.content.pm.FallbackCategoryProvider;
 import android.content.pm.FeatureInfo;
-import android.content.pm.GosPackageState;
 import android.content.pm.IDexModuleRegisterCallback;
 import android.content.pm.IOnChecksumsReadyListener;
 import android.content.pm.IPackageChangeObserver;
@@ -22590,8 +22589,7 @@ public class PackageManagerService extends IPackageManager.Stub
                     PackageManager.INSTALL_REASON_UNKNOWN,
                     PackageManager.UNINSTALL_REASON_UNKNOWN,
                     null /*harmfulAppWarning*/,
-                    null /*splashScreenTheme*/,
-                    null /*gosPackageState*/);
+                    null /*splashScreenTheme*/);
         }
         mSettings.writeKernelMappingLPr(ps);
     }
@@ -24799,8 +24797,6 @@ public class PackageManagerService extends IPackageManager.Stub
                         mPerUidReadTimeoutsCache = null;
                     }
                 });
-
-        initGosPackageStateAppIds();
     }
 
     public void waitForAppDataPrepared() {
@@ -28458,12 +28454,6 @@ public class PackageManagerService extends IPackageManager.Stub
                 return block.apply(snapshot::getPackageSetting);
             }
         }
-
-        @Nullable
-        @Override
-        public GosPackageState getGosPackageState(String packageName, int userId) {
-            return PackageManagerService.this.getGosPackageState(packageName, userId);
-        }
     }
 
     @GuardedBy("mLock")
@@ -29169,52 +29159,6 @@ public class PackageManagerService extends IPackageManager.Stub
             this.enabledState = enabledState;
             this.lastDisableAppCaller = lastDisableAppCaller;
             this.installed = installed;
-        }
-    }
-
-    int mediaProviderAppId;
-    int permissionControllerAppId;
-
-    private void initGosPackageStateAppIds() {
-        synchronized (mLock) {
-            AndroidPackage mediaProvider = mPackages.get("com.android.providers.media.module");
-            if (mediaProvider != null) {
-                // getUid() confusingly returns appId
-                mediaProviderAppId = mediaProvider.getUid();
-            }
-
-            AndroidPackage permissionController = mPackages.get(mRequiredPermissionControllerPackage);
-            if (permissionController != null) {
-                permissionControllerAppId = permissionController.getUid();
-            }
-        }
-    }
-
-    @Override
-    public GosPackageState getGosPackageState(@NonNull String packageName, int userId) {
-        return GosPackageStatePmHooks.get(this, packageName, userId);
-    }
-
-    @Override
-    public GosPackageState setGosPackageState(@NonNull String packageName, int flags, @Nullable byte[] storageScopes, boolean killUid, int userId) {
-        return GosPackageStatePmHooks.set(this, packageName, flags, storageScopes, killUid, userId);
-    }
-
-    @Override
-    public int getSpecialRuntimePermissionFlags(String packageName) {
-        final int callingUid = Binder.getCallingUid();
-
-        synchronized (mLock) {
-            AndroidPackage pkg = mPackages.get(packageName);
-            if (pkg == null) {
-                throw new IllegalStateException();
-            }
-
-            if (UserHandle.getAppId(callingUid) != pkg.getUid()) { // getUid() confusingly returns appId
-                throw new SecurityException();
-            }
-
-            return SpecialRuntimePermUtils.getFlags(pkg);
         }
     }
 }

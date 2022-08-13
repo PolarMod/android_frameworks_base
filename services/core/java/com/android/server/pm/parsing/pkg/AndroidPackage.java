@@ -325,7 +325,4 @@ public interface AndroidPackage extends PkgAppInfo, PkgPackageInfo, ParsingPacka
     @Deprecated
     @NonNull
     String toAppInfoToString();
-
-    int getGosPackageStateCachedDerivedFlags();
-    void setGosPackageStateCachedDerivedFlags(int value);
 }
