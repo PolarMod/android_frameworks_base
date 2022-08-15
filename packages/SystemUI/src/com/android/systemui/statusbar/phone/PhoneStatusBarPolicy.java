@@ -164,10 +164,6 @@ public class PhoneStatusBarPolicy
     private NfcAdapter mAdapter;
     private final Context mContext;
 
-    private boolean mShowBluetoothBattery;
-
-    private static final String BLUETOOTH_SHOW_BATTERY =
-            "system:" + Settings.System.BLUETOOTH_SHOW_BATTERY;
 
     @Inject
     public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
