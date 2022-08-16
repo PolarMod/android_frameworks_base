@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.crdroid;
+package com.android.internal.util.polar;
 
 import static android.os.UserHandle.USER_SYSTEM;
 
