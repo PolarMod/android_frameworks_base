@@ -25,6 +25,7 @@ import android.database.ContentObserver;
 import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.telephony.AccessNetworkConstants;
 import android.telephony.CellSignalStrength;
@@ -57,6 +58,8 @@ import com.android.settingslib.net.SignalStrengthUtil;
 import com.android.systemui.R;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.util.CarrierConfigTracker;
+import com.android.systemui.Dependency;
+import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -67,7 +70,8 @@ import java.util.Map;
 /**
  * Monitors the mobile signal changes and update the SysUI icons.
  */
-public class MobileSignalController extends SignalController<MobileState, MobileIconGroup> {
+public class MobileSignalController extends SignalController<MobileState, MobileIconGroup> 
+        implements TunerService.Tunable {
     private static final SimpleDateFormat SSDF = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
     private static final int STATUS_HISTORY_SIZE = 64;
     private static final int IMS_TYPE_WWAN = 1;
