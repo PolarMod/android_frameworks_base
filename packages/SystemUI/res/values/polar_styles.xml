@@ -24,9 +24,5 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-    <!-- Tri-state UI -->
-    <style name="TriStateUiText">
-        <item name="android:textSize">11.0sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 </resources>
