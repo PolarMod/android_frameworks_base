@@ -104,10 +104,6 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     // Where to copy the next state into.
     private int mMobileStatusHistoryIndex;
 
-    private ImsManager mImsManager;
-    private FeatureConnector<ImsManager> mFeatureConnector;
-    private int mCallState = TelephonyManager.CALL_STATE_IDLE;
-
     private static final String SHOW_FOURG_ICON =
             "system:" + Settings.System.SHOW_FOURG_ICON;
 
