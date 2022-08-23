@@ -664,7 +664,7 @@ public class UdfpsController implements DozeReceiver {
 
         mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfps_vendor_code);
 
-        if (com.android.internal.util.crdroid.Utils.isPackageInstalled(mContext, "com.crdroid.udfps.animations")) {
+        if (com.android.internal.util.polar.Utils.isPackageInstalled(mContext, "com.polar.udfps.animations")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
         }
     }

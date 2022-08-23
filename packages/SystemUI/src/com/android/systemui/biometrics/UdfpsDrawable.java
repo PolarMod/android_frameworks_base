@@ -32,7 +32,7 @@ import android.util.PathParser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.internal.util.crdroid.Utils;
+import com.android.internal.util.polar.Utils;
 
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
@@ -47,7 +47,7 @@ public abstract class UdfpsDrawable extends Drawable {
 
     static final String UDFPS_ICON = "system:" + Settings.System.UDFPS_ICON;
 
-    String udfpsResourcesPackage = "com.crdroid.udfps.icons";
+    String udfpsResourcesPackage = "com.polar.udfps.icons";
 
     @NonNull final Context mContext;
     @NonNull final ShapeDrawable mFingerprintDrawable;
