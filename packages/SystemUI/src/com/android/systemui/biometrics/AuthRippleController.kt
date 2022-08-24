@@ -24,6 +24,7 @@ import android.graphics.PointF
 import android.hardware.biometrics.BiometricSourceType
 import android.util.DisplayMetrics
 import android.util.Log
+import android.provider.Settings
 import androidx.annotation.VisibleForTesting
 import com.android.keyguard.KeyguardUpdateMonitor
 import com.android.keyguard.KeyguardUpdateMonitorCallback
