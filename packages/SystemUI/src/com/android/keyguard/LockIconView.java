@@ -26,14 +26,20 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.provider.Settings;
+import android.content.res.Resources;
+import android.content.pm.PackageManager;
+import andorid.util.Log;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.graphics.ColorUtils;
+import com.adnroid.internal.util.polar.Utils;
 import com.android.settingslib.Utils;
 import com.android.systemui.Dumpable;
+import com.android.systemui.biometrics.UdfpsDrawable;
 import com.android.systemui.R;
 
 import java.io.FileDescriptor;
@@ -46,11 +52,17 @@ public class LockIconView extends FrameLayout implements Dumpable {
     @IntDef({ICON_NONE, ICON_LOCK, ICON_FINGERPRINT, ICON_UNLOCK})
     public @interface IconType {}
 
+    private static final TAG = "LockIconView";
+
     public static final int ICON_NONE = -1;
     public static final int ICON_LOCK = 0;
     public static final int ICON_FINGERPRINT = 1;
     public static final int ICON_UNLOCK = 2;
 
+    private static final String UDFPS_ICON_PACKGE = "com.polar.udfps.icons";
+    private static final String UDFPS_ICON = "system:" + Settings.System.UDFPS_ICON;
+    private int mSelectedFpIcon = 0;
+    
     private @IconType int mIconType;
     private boolean mAod;
 
@@ -60,6 +72,8 @@ public class LockIconView extends FrameLayout implements Dumpable {
 
     private ImageView mLockIcon;
     private ImageView mBgView;
+    private UdfpsDrawable mUdfpsDrawable;
+    private Context mContext;
 
     private int mLockIconColor;
     private boolean mUseBackground = false;
@@ -68,6 +82,8 @@ public class LockIconView extends FrameLayout implements Dumpable {
     public LockIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mSensorRect = new RectF();
+	mContext = context;
+	mUdfpsDrawable = new UdfpsDrawable(context);
     }
 
     @Override
@@ -170,8 +186,22 @@ public class LockIconView extends FrameLayout implements Dumpable {
     public void updateIcon(@IconType int icon, boolean aod) {
         mIconType = icon;
         mAod = aod;
-
-        mLockIcon.setImageState(getLockIconState(mIconType, mAod), true);
+	int iconType = Settings.System.getInt(mContext, Settings.System.UDFPS_ICON, 0);
+	boolean isResourcesInstalled = com.android.internal.util.polar.Utils.isPackageInstalled(mContext, UDFPS_ICON_PACKAGE);
+        if(iconType == 0){
+	        Log.d(TAG, "No custom AOD fingerpringt icon selected");
+	}
+	if(!isResourcesInstalled && iconType != 0){
+		Log.w(TAG, "No resources for FOD AOD icon installed, but custom icon is selected");
+	}
+	if(icon == ICON_FINGERPRINT && iconType != 0 && isResourcesInstalled){
+		Log.d(TAG, "Handling fingerprint icon in custom manner");
+		Drawable UdfpsIcon = mUdfpsDrawable.getUdfpsDrawable();
+		mLockIcon.setImageDrawable(UdfpsIcon);
+	}else{
+		Log.d(TAG, "Handling AOD lock icon in usual manner");
+		mLockIcon.setImageState(getLockIconState(mIconType, mAod), true);
+	}
     }
 
     private static int[] getLockIconState(@IconType int icon, boolean aod) {
