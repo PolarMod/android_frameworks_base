@@ -52,7 +52,7 @@ public class LockIconView extends FrameLayout implements Dumpable {
     @IntDef({ICON_NONE, ICON_LOCK, ICON_FINGERPRINT, ICON_UNLOCK})
     public @interface IconType {}
 
-    private static final TAG = "LockIconView";
+    private static final String TAG = "LockIconView";
 
     public static final int ICON_NONE = -1;
     public static final int ICON_LOCK = 0;
