@@ -145,7 +145,7 @@ public abstract class UdfpsDrawable extends Drawable {
         return mIlluminationShowing;
     }
 
-    Drawable getUdfpsDrawable() {
+    public Drawable getUdfpsDrawable() {
         return mUdfpsDrawable;
     }
 
