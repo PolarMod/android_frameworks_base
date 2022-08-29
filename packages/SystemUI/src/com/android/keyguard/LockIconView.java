@@ -193,7 +193,7 @@ public class LockIconView extends FrameLayout implements Dumpable {
 	if(!isResourcesInstalled && iconType != 0){
 		Log.w(TAG, "No resources for FOD AOD icon installed, but custom icon is selected");
 	}
-	if(icon == ICON_FINGERPRINT && iconType != 0 && isResourcesInstalled){
+	if(icon == ICON_NONE && iconType != 0 && isResourcesInstalled){
 		Log.d(TAG, "Handling fingerprint icon in custom manner");
 		Drawable udfpsIcon = mUdfpsDrawable.getUdfpsDrawable();
 		if(udfpsIcon == null) {
