@@ -202,6 +202,7 @@ public class LockIconView extends FrameLayout implements Dumpable {
 		}
 		mLockIcon.setImageDrawable(udfpsIcon);
 	}else{
+		Log.d(TAG, "Icon type requested: " + icon.toString());
 		Log.d(TAG, "Handling AOD lock icon in usual manner");
 		mLockIcon.setImageState(getLockIconState(mIconType, mAod), true);
 	}
