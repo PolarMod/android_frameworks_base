@@ -94,6 +94,8 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import lineageos.providers.LineageSettings;
+
 /**
  * This class contains all of the policy about which icons are installed in the status bar at boot
  * time. It goes through the normal API for icons, even though it probably strictly doesn't need to.
@@ -113,6 +115,8 @@ public class PhoneStatusBarPolicy
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     static final int LOCATION_STATUS_ICON_ID = PrivacyType.TYPE_LOCATION.getIconId();
+    private static final String NETWORK_TRAFFIC_LOCATION =
+            "lineagesecure:" + LineageSettings.Secure.NETWORK_TRAFFIC_LOCATION;
 
     private final String mSlotCast;
     private final String mSlotHotspot;
@@ -133,6 +137,7 @@ public class PhoneStatusBarPolicy
     private final String mSlotScreenRecord;
     private final String mSlotFirewall;
     private final String mSlotNfc;
+    private final String mSlotNetworkTraffic;
     private final int mDisplayId;
     private final SharedPreferences mSharedPreferences;
     private final DateFormatUtil mDateFormatUtil;
@@ -178,6 +183,11 @@ public class PhoneStatusBarPolicy
 
     private NfcAdapter mAdapter;
     private final Context mContext;
+
+    private boolean mShowBluetoothBattery;
+    private boolean mHideBluetooth;
+
+    private boolean mShowNetworkTraffic;
 
     @Inject
     public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
@@ -250,10 +260,17 @@ public class PhoneStatusBarPolicy
                 com.android.internal.R.string.status_bar_screen_record);
         mSlotFirewall = resources.getString(R.string.status_bar_firewall_slot);
         mSlotNfc = resources.getString(com.android.internal.R.string.status_bar_nfc);
+        mSlotNetworkTraffic = resources.getString(com.android.internal.R.string.status_bar_network_traffic);
+        mCurrentUserSetup = mProvisionedController.isDeviceProvisioned();
 
         mDisplayId = displayId;
         mSharedPreferences = sharedPreferences;
         mDateFormatUtil = dateFormatUtil;
+
+        Dependency.get(TunerService.class).addTunable(this,
+                BLUETOOTH_SHOW_BATTERY,
+                NETWORK_TRAFFIC_LOCATION,
+                StatusBarIconController.ICON_HIDE_LIST);
     }
 
     /** Initialize the object after construction. */
@@ -358,6 +375,11 @@ public class PhoneStatusBarPolicy
         mIconController.setIconVisibility(mSlotNfc, false);
         updateNfc();
 
+        // network traffic
+        mShowNetworkTraffic = LineageSettings.Secure.getIntForUser(mContext.getContentResolver(),
+            NETWORK_TRAFFIC_LOCATION, 0, UserHandle.USER_CURRENT) == 1;
+        updateNetworkTraffic();
+
         mRotationLockController.addCallback(this);
         mBluetooth.addCallback(this);
         mProvisionedController.addCallback(this);
@@ -395,6 +417,32 @@ public class PhoneStatusBarPolicy
     @Override
     public void onConfigChanged(ZenModeConfig config) {
         updateVolumeZen();
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case BLUETOOTH_SHOW_BATTERY:
+                mShowBluetoothBattery =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                updateBluetooth();
+                break;
+            case NETWORK_TRAFFIC_LOCATION:
+                mShowNetworkTraffic =
+                        TunerService.parseInteger(newValue, 0) == 1;
+                updateNetworkTraffic();
+                break;
+            case StatusBarIconController.ICON_HIDE_LIST:
+                ArraySet<String> hideList = StatusBarIconController.getIconHideList(mContext, newValue);
+                boolean hideBluetooth = hideList.contains(mSlotBluetooth);
+                if (hideBluetooth != mHideBluetooth) {
+                    mHideBluetooth = hideBluetooth;
+                    updateBluetooth();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private void updateAlarm() {
@@ -539,6 +587,11 @@ public class PhoneStatusBarPolicy
 
         mIconController.setIcon(mSlotBluetooth, iconId, contentDescription);
         mIconController.setIconVisibility(mSlotBluetooth, bluetoothVisible);
+    }
+
+    private final void updateNetworkTraffic() {
+        mIconController.setNetworkTraffic(mSlotNetworkTraffic, new NetworkTrafficState(mShowNetworkTraffic));
+        mIconController.setIconVisibility(mSlotNetworkTraffic, mShowNetworkTraffic);
     }
 
     private final void updateTTY() {
@@ -943,5 +996,35 @@ public class PhoneStatusBarPolicy
         // Ensure this is on the main thread
         if (DEBUG) Log.d(TAG, "screenrecord: hiding icon");
         mHandler.post(() -> mIconController.setIconVisibility(mSlotScreenRecord, false));
+    }
+
+    public static class BluetoothIconState {
+        public boolean visible;
+        public int batteryLevel;
+        public String contentDescription;
+
+        public BluetoothIconState(boolean visible, int batteryLevel, String contentDescription) {
+            this.visible = visible;
+            this.batteryLevel = batteryLevel;
+            this.contentDescription = contentDescription;
+        }
+
+        @Override
+        public String toString() {
+            return "BluetoothIconState(visible=" + visible + " batteryLevel=" + batteryLevel + ")";
+        }
+    }
+
+    public static class NetworkTrafficState {
+        public boolean visible;
+
+        public NetworkTrafficState(boolean visible) {
+            this.visible = visible;
+        }
+
+        @Override
+        public String toString() {
+            return "NetworkTrafficState(visible=" + visible + ")";
+        }
     }
 }
