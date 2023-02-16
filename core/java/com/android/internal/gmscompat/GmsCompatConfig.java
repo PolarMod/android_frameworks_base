@@ -106,6 +106,12 @@ public class GmsCompatConfig implements Parcelable {
         for (int i = 0; i < cnt; ++i) {
             String namespace = p.readString();
             map.put(namespace, p.createStringArrayList());
+            int cnt = forceDefaultFlagsMap.size();
+            p.writeInt(cnt);
+            for (int i = 0; i < cnt; ++i) {
+                p.writeString(forceDefaultFlagsMap.keyAt(i));
+                p.writeStringList(forceDefaultFlagsMap.valueAt(i));
+            }
         }
     }
 
@@ -143,6 +149,13 @@ public class GmsCompatConfig implements Parcelable {
                 r.spoofSelfPermissionChecks = perms != null ?
                         new ArraySet<>(perms) :
                         new ArraySet<>();
+            {
+                int cnt = p.readInt();
+                r.forceDefaultFlagsMap.ensureCapacity(cnt);
+                for (int i = 0; i < cnt; ++i) {
+                    String namespace = p.readString();
+                    r.forceDefaultFlagsMap.put(namespace, p.createStringArrayList());
+                }
             }
             return r;
         }
