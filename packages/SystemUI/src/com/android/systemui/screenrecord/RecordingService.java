@@ -195,7 +195,7 @@ public class RecordingService extends Service implements ScreenMediaRecorderList
                     userId = mUserContextTracker.getUserContext().getUserId();
                 }
                 Log.d(TAG, "notifying for user " + userId);
-                stopRecording(userId);
+                stopService(userId);
                 stopForeground(true);
                 break;
 
@@ -217,11 +217,11 @@ public class RecordingService extends Service implements ScreenMediaRecorderList
                 // Close quick shade
                 sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
                 break;
-            case ACTION_SHOW_DIALOG:
+            /*case ACTION_SHOW_DIALOG:
                 if (mController != null) {
                     mController.createScreenRecordDialog(this, null).show();
                 }
-                break;
+                break;*/
         }
         return Service.START_STICKY;
     }
@@ -504,6 +504,14 @@ public class RecordingService extends Service implements ScreenMediaRecorderList
     public void onInfo(MediaRecorder mr, int what, int extra) {
         Log.d(TAG, "Media recorder info: " + what);
         onStartCommand(getStopIntent(this), 0, 0);
+    }
+
+    @Override
+    public void onStopped() {
+        if (mController.isRecording()) {
+            Log.d(TAG, "Stopping recording because the system requested the stop");
+            stopService();
+	}
     }
 
     private class RecordingServiceBinder extends IRemoteRecording.Stub
