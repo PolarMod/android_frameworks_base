@@ -5708,7 +5708,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mVrManagerInternal != null) {
             mVrManagerInternal.addPersistentVrModeStateListener(mPersistentVrModeListener);
         }
-
+	mLineageHardware = LineageHardwareManager.getInstance(mContext);
         mOPGestures = new OPGesturesListener(mContext, new OPGesturesListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
