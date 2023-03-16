@@ -595,8 +595,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // User defined hw key config
     boolean mHardwareKeysDisable = false;
     boolean mSwapCapacitiveKeys = false;
-    ANBIHandler mANBIHandler;
-    private boolean mANBIEnabled;
+
     private OPGesturesListener mOPGestures;
     private boolean haveEnableGesture = false;
 
