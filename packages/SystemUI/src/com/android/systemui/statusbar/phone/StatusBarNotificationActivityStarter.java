@@ -584,6 +584,10 @@ class StatusBarNotificationActivityStarter implements NotificationActivityStarte
                 } catch (PendingIntent.CanceledException e) {
                     // ignore
                 }
+	    }
+	}
+    }
+
     void launchFullScreenIntent(NotificationEntry entry) {
         // Skip if device is in VR mode.
         if (mPresenter.isDeviceInVrMode()) {
