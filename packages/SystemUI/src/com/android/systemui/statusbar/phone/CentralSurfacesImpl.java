@@ -509,8 +509,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
 
     // expanded notifications
     // the sliding/resizing panel within the notification window
-    protected NotificationPanelViewController mNotificationPanelViewController;
-    /** Controller for the Shade. */
     @VisibleForTesting
     NotificationPanelViewController mNotificationPanelViewController;
 
