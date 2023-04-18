@@ -11,10 +11,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.ArrayMap;
 import android.util.ArraySet;
-<<<<<<< HEAD
-import android.util.SparseArray;
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
 
 import com.android.internal.gmscompat.flags.GmsFlag;
 
@@ -30,11 +26,6 @@ public class GmsCompatConfig implements Parcelable {
     public final ArrayMap<String, ArrayList<String>> forceDefaultFlagsMap = new ArrayMap<>();
     // keys are package names, values are list of permissions self-checks of which should be spoofed
     public final ArrayMap<String, ArrayList<String>> spoofSelfPermissionChecksMap = new ArrayMap<>();
-<<<<<<< HEAD
-    // keys are serviceIds, values are service permission requirements that need to be bypassed
-    public final SparseArray<ArraySet<String>> gmsServiceBrokerPermissionBypasses = new SparseArray<>();
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
 
     // set only in processes for which GmsCompat is enabled, to speed up lookups
     public ArraySet<String> spoofSelfPermissionChecks;
@@ -102,18 +93,6 @@ public class GmsCompatConfig implements Parcelable {
 
         writeArrayMapStringStringList(forceDefaultFlagsMap, p);
         writeArrayMapStringStringList(spoofSelfPermissionChecksMap, p);
-<<<<<<< HEAD
-        {
-            var map = gmsServiceBrokerPermissionBypasses;
-            int cnt = map.size();
-            p.writeInt(cnt);
-            for (int i = 0; i < cnt; ++i) {
-                p.writeInt(map.keyAt(i));
-                p.writeArraySet(map.valueAt(i));
-            }
-        }
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
     }
 
     static void writeArrayMapStringStringList(ArrayMap<String, ArrayList<String>> map, Parcel p) {
@@ -131,15 +110,6 @@ public class GmsCompatConfig implements Parcelable {
         for (int i = 0; i < cnt; ++i) {
             String namespace = p.readString();
             map.put(namespace, p.createStringArrayList());
-<<<<<<< HEAD
-            int cnt = forceDefaultFlagsMap.size();
-            p.writeInt(cnt);
-            for (int i = 0; i < cnt; ++i) {
-                p.writeString(forceDefaultFlagsMap.keyAt(i));
-                p.writeStringList(forceDefaultFlagsMap.valueAt(i));
-            }
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
         }
     }
 
@@ -171,32 +141,12 @@ public class GmsCompatConfig implements Parcelable {
 
             readArrayMapStringStringList(p, r.forceDefaultFlagsMap);
             readArrayMapStringStringList(p, r.spoofSelfPermissionChecksMap);
-<<<<<<< HEAD
-            {
-                int cnt = p.readInt();
-                ClassLoader cl = String.class.getClassLoader();
-                for (int i = 0; i < cnt; ++i) {
-                    r.gmsServiceBrokerPermissionBypasses.put(p.readInt(), (ArraySet<String>) p.readArraySet(cl));
-                }
-            }
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
 
             if (GmsCompat.isEnabled()) {
                 ArrayList<String> perms = r.spoofSelfPermissionChecksMap.get(ActivityThread.currentPackageName());
                 r.spoofSelfPermissionChecks = perms != null ?
                         new ArraySet<>(perms) :
                         new ArraySet<>();
-<<<<<<< HEAD
-            {
-                int cnt = p.readInt();
-                r.forceDefaultFlagsMap.ensureCapacity(cnt);
-                for (int i = 0; i < cnt; ++i) {
-                    String namespace = p.readString();
-                    r.forceDefaultFlagsMap.put(namespace, p.createStringArrayList());
-                }
-=======
->>>>>>> dfa99503c9a7 (gmscompat: support spoofing self permission checks)
             }
             return r;
         }
