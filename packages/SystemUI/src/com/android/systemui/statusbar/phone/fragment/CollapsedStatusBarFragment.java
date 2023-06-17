@@ -28,6 +28,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
@@ -119,7 +120,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private LinearLayout mEndSideContent;
     private View mOngoingCallChip;
     private View mNotificationIconAreaInner;
-    private View mNetworkTrafficHolder;
+    private View mNetworkTrafficHolderStart;
+    private View mNetworkTrafficHolderCenter;
+    private View mNetworkTrafficHolderEnd;
     private int mDisabled1;
     private int mDisabled2;
     private DarkIconManager mDarkIconManager;
@@ -141,6 +144,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private final Executor mMainExecutor;
     private final DumpManager mDumpManager;
     private ClockController mClockController;
+    private Context mContext;
     private boolean mIsClockBlacklisted;
 
     private List<String> mBlockedIcons = new ArrayList<>();
@@ -264,7 +268,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         updateBlockedIcons();
         mStatusBarIconController.addIconGroup(mDarkIconManager);
         mEndSideContent = mStatusBar.findViewById(R.id.status_bar_end_side_content);
-        mNetworkTrafficHolder = mStatusBar.findViewById(R.id.network_traffic_holder);
+        mNetworkTrafficHolderStart = mStatusBar.findViewById(R.id.network_traffic_holder_start);
+        mNetworkTrafficHolderCenter = mStatusBar.findViewById(R.id.network_traffic_holder_center);
+        mNetworkTrafficHolderEnd = mStatusBar.findViewById(R.id.network_traffic_holder_end);
         mClockController = mStatusBar.getClockController();
         mOngoingCallChip = mStatusBar.findViewById(R.id.ongoing_call_chip);
         showEndSideContent(false);
@@ -272,6 +278,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         initEmergencyCryptkeeperText();
         initOperatorName();
         initNotificationIconArea();
+
+        mContext = getContext();
         Dependency.get(TunerService.class).addTunable(this, StatusBarIconController.ICON_HIDE_LIST);
 
         mSystemEventAnimator =
@@ -368,7 +376,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void onTuningChanged(String key, String newValue) {
         boolean wasClockBlacklisted = mIsClockBlacklisted;
         mIsClockBlacklisted = StatusBarIconController.getIconHideList(
-                getContext(), newValue).contains("clock");
+                mContext, newValue).contains("clock");
         if (wasClockBlacklisted && !mIsClockBlacklisted) {
             showClock(false);
         }
@@ -524,7 +532,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     private void hideEndSideContent(boolean animate) {
         animateHide(mEndSideContent, animate);
-        animateHide(mNetworkTrafficHolder, animate);
+        animateHide(mNetworkTrafficHolderStart, animate);
+        animateHide(mNetworkTrafficHolderCenter, animate);
+        animateHide(mNetworkTrafficHolderEnd, animate);
     }
 
     private void showEndSideContent(boolean animate) {
@@ -532,12 +542,16 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         int state = mAnimationScheduler.getAnimationState();
         if (state == IDLE || state == SHOWING_PERSISTENT_DOT) {
             animateShow(mEndSideContent, animate);
-            animateShow(mNetworkTrafficHolder, animate);
+            animateShow(mNetworkTrafficHolderStart, animate);
+            animateShow(mNetworkTrafficHolderCenter, animate);
+            animateShow(mNetworkTrafficHolderEnd, animate);
         } else {
             // We are in the middle of a system status event animation, which will animate the
             // alpha (but not the visibility). Allow the view to become visible again
             mEndSideContent.setVisibility(View.VISIBLE);
-            mNetworkTrafficHolder.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderStart.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderCenter.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderEnd.setVisibility(View.VISIBLE);
         }
     }
 
