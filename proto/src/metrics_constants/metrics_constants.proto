@@ -7439,6 +7439,6 @@ message MetricsEvent {
     // END OF AOSP CONSTANTS
 
     //PolarSettings
-    POLAR_SETTING = 2000;
+    POLAR_SETTINGS = 2000;
   }
 }
