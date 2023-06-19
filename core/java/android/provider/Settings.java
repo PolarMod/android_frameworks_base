@@ -5673,6 +5673,7 @@ public final class Settings {
 
         /**
          * UDFPS Animation
+         * @hide
          */
         public static final String UDFPS_ANIM = "udfps_anim";
 
