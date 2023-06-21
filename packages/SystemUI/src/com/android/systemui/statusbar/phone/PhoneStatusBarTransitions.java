@@ -24,8 +24,6 @@ import android.view.View;
 
 import com.android.systemui.R;
 
-import org.lineageos.internal.statusbar.NetworkTraffic;
-
 public final class PhoneStatusBarTransitions extends BarTransitions {
     private static final float ICON_ALPHA_WHEN_NOT_OPAQUE = 1;
     private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_BATTERY_CLOCK = 0.5f;
@@ -34,7 +32,6 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     private final float mIconAlphaWhenOpaque;
 
     private View mStartSide, mStatusIcons, mNetworkTraffic, mBattery;
-    private NetworkTraffic mNetworkTrafficStart, mNetworkTrafficCenter, mNetworkTrafficEnd;
     private Animator mCurrentAnimation;
 
     /**
@@ -48,9 +45,6 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
         mStatusIcons = statusBarView.findViewById(R.id.statusIcons);
         mNetworkTraffic = statusBarView.findViewById(R.id.network_traffic);
         mBattery = statusBarView.findViewById(R.id.battery);
-        mNetworkTrafficStart.setViewPosition(0);        /* start side display */
-        mNetworkTrafficCenter.setViewPosition(1);       /* center display */
-        mNetworkTrafficEnd.setViewPosition(2);          /* end side display */
         applyModeBackground(-1, getMode(), false /*animate*/);
         applyMode(getMode(), false /*animate*/);
     }
