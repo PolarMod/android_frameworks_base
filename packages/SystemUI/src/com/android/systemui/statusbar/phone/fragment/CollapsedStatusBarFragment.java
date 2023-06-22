@@ -182,7 +182,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     /**
      * Whether we've launched the secure camera over the lockscreen, but haven't yet received a
      * status bar window state change afterward.
-     *
+     * <p>
      * We wait for this state change (which will tell us whether to show/hide the status bar icons)
      * so that there is no flickering/jump cutting during the camera launch.
      */
@@ -258,7 +258,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.status_bar, container, false);
     }
 
@@ -288,7 +288,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mDarkIconManager.setShouldLog(true);
         updateBlockedIcons();
         mStatusBarIconController.addIconGroup(mDarkIconManager);
-        mSystemIconArea = mStatusBar.findViewById(R.id.system_icon_area);
         mNetworkTrafficHolder = mStatusBar.findViewById(R.id.network_traffic_holder);
         mClockController = mStatusBar.getClockController();
         mOngoingCallChip = mStatusBar.findViewById(R.id.ongoing_call_chip);
@@ -402,7 +401,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         }
     }
 
-    /** Initializes views related to the notification icon area. */
+    /**
+     * Initializes views related to the notification icon area.
+     */
     public void initNotificationIconArea() {
         ViewGroup notificationIconArea = mStatusBar.findViewById(R.id.notification_icon_area);
         mNotificationIconAreaInner =
@@ -419,7 +420,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     /**
      * Returns the dagger component for this fragment.
-     *
+     * <p>
      * TODO(b/205609837): Eventually, the dagger component should encapsulate all status bar
      *   fragment functionality and we won't need to expose it here anymore.
      */
@@ -484,7 +485,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                 && !mKeyguardStateController.isKeyguardFadingAway()
                 && shouldHideNotificationIcons()
                 && !(mStatusBarStateController.getState() == StatusBarState.KEYGUARD
-                        && headsUpVisible)) {
+                && headsUpVisible)) {
             state |= DISABLE_NOTIFICATION_ICONS;
             state |= DISABLE_SYSTEM_INFO;
             View clockView = mClockController.getClock();
@@ -566,16 +567,30 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         return mStatusBarHideIconsForBouncerManager.getShouldHideStatusBarIconsForBouncer();
     }
 
-    private void hideSystemIconArea(boolean animate) {
-        animateHide(mSystemIconArea, animate);
+    private void hideEndSideContent(boolean animate) {
+        animateHide(mEndSideContent, animate);
+        animateHide(mNetworkTrafficHolderStart, animate);
+        animateHide(mNetworkTrafficHolderCenter, animate);
+        animateHide(mNetworkTrafficHolderEnd, animate);
         animateHide(mNetworkTrafficHolder, animate);
     }
+
 
     private void showEndSideContent(boolean animate) {
         // Only show the system icon area if we are not currently animating
         int state = mAnimationScheduler.getAnimationState();
         if (state == IDLE || state == SHOWING_PERSISTENT_DOT) {
-            animateShow(mSystemIconArea, animate);
+            animateShow(mEndSideContent, animate);
+            animateShow(mNetworkTrafficHolderStart, animate);
+            animateShow(mNetworkTrafficHolderCenter, animate);
+            animateShow(mNetworkTrafficHolderEnd, animate);
+        } else {
+            // We are in the middle of a system status event animation, which will animate the
+            // alpha (but not the visibility). Allow the view to become visible again
+            mEndSideContent.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderStart.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderCenter.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderEnd.setVisibility(View.VISIBLE);
             animateShow(mNetworkTrafficHolder, animate);
         }
     }
@@ -588,12 +603,16 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateShow(mClockController.getClock(), animate);
     }
 
-    /** Hides the ongoing call chip. */
+    /**
+     * Hides the ongoing call chip.
+     */
     public void hideOngoingCallChip(boolean animate) {
         animateHiddenState(mOngoingCallChip, View.GONE, animate);
     }
 
-    /** Displays the ongoing call chip. */
+    /**
+     * Displays the ongoing call chip.
+     */
     public void showOngoingCallChip(boolean animate) {
         animateShow(mOngoingCallChip, animate);
     }
@@ -708,7 +727,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     }
 
     @Override
-    public void onStateChanged(int newState) { }
+    public void onStateChanged(int newState) {
+    }
 
     @Override
     public void onDozingChanged(boolean isDozing) {
