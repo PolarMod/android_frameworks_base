@@ -113,14 +113,6 @@
                         android:paddingStart="4dp"
                         >
 
-                        <org.lineageos.internal.statusbar.NetworkTraffic
-                            android:id="@+id/network_traffic_start"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:maxLines="2"
-                            android:gravity="center"
-                        />
-
                     </com.android.systemui.statusbar.LineageStatusBarItemHolder>
 
                 </LinearLayout>
@@ -142,13 +134,6 @@
             android:layoutDirection="ltr"
             android:gravity="center"
             >
-
-            <org.lineageos.internal.statusbar.NetworkTraffic
-                android:id="@+id/network_traffic_center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:maxLines="2"
-                android:gravity="center" />
 
         </com.android.systemui.statusbar.LineageStatusBarItemHolder>
 
@@ -182,14 +167,6 @@
                     android:gravity="center"
                     android:paddingLeft="2dp"
                     >
-
-                    <org.lineageos.internal.statusbar.NetworkTraffic
-                        android:id="@+id/network_traffic_end"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:maxLines="2"
-                        android:gravity="center"
-                    />
 
                 </com.android.systemui.statusbar.LineageStatusBarItemHolder>
 
