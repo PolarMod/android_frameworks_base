@@ -2266,7 +2266,7 @@ easier.
     <!-- DeviceDefault theme for a window that should look like the Settings app.  -->
     <style name="Theme.DeviceDefault.Settings" parent="Theme.DeviceDefault.Light">
         <!-- From Theme.Material.Light.LightStatusBar -->
-        <item name="windowLightStatusBar">true</item>
+        <item name="windowLightStatusBar">false</item>
 
         <!-- From Theme.Material.Settings -->
         <item name="homeAsUpIndicator">@drawable/ic_ab_back_material_settings</item>
@@ -2597,7 +2597,7 @@ easier.
         <item name="windowNoTitle">true</item>
         <item name="windowBackground">@color/transparent</item>
         <item name="backgroundDimEnabled">true</item>
-        <item name="statusBarColor">@color/transparent</item>
+        <item name="statusBarColor">@color/black</item>
         <item name="windowContentOverlay">@null</item>
         <item name="colorControlActivated">?attr/colorControlHighlight</item>
         <item name="listPreferredItemPaddingStart">?attr/dialogPreferredPadding</item>
