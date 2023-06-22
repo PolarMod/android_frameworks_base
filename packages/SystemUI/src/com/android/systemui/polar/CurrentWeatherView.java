@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.internal.util.crdroid.OmniJawsClient;
+import com.android.internal.util.polar.OmniJawsClient;
 import com.android.systemui.R;
 
 public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.OmniJawsObserver {

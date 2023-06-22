@@ -37,7 +37,7 @@ import androidx.annotation.NonNull;
 import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
 import com.android.systemui.R;
-import com.android.systemui.crdroid.CurrentWeatherView;
+import com.android.systemui.polar.CurrentWeatherView;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dump.DumpManager;
 import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
