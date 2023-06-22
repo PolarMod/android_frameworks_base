@@ -569,6 +569,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     private void hideEndSideContent(boolean animate) {
         animateHide(mEndSideContent, animate);
+        animateHide(mNetworkTrafficHolderStart, animate);
+        animateHide(mNetworkTrafficHolderCenter, animate);
+        animateHide(mNetworkTrafficHolderEnd, animate);
         animateHide(mNetworkTrafficHolder, animate);
     }
 
@@ -578,10 +581,16 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         int state = mAnimationScheduler.getAnimationState();
         if (state == IDLE || state == SHOWING_PERSISTENT_DOT) {
             animateShow(mEndSideContent, animate);
+            animateShow(mNetworkTrafficHolderStart, animate);
+            animateShow(mNetworkTrafficHolderCenter, animate);
+            animateShow(mNetworkTrafficHolderEnd, animate);
         } else {
             // We are in the middle of a system status event animation, which will animate the
             // alpha (but not the visibility). Allow the view to become visible again
             mEndSideContent.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderStart.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderCenter.setVisibility(View.VISIBLE);
+            mNetworkTrafficHolderEnd.setVisibility(View.VISIBLE);
             animateShow(mNetworkTrafficHolder, animate);
         }
     }
