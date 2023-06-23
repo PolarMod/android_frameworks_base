@@ -5649,13 +5649,13 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
 
-        /*
+        /**
          * Where weather is located on the keyguard
          * @hide
          */
         public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
 
-        /*
+        /**
          * Whether showing weather on keyguard is enabled
          * @hide
          */
