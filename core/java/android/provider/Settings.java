@@ -5649,6 +5649,19 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
 
+        /*
+         * Where weather is located on the keyguard
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
+
+        /*
+         * Whether showing weather on keyguard is enabled
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
+
+
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
