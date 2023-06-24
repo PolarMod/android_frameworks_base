@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.LinearLayout;
+import android.graphics.Color;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.core.animation.Animator;
@@ -259,7 +260,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_bar, container, false);
-        view.setBackgroundColor(R.color.black);
+        view.setBackgroundColor(Color.BLACK);
         return view;
     }
 
