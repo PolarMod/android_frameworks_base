@@ -5699,6 +5699,13 @@ public final class Settings {
          */
         public static final String ROAMING_INDICATOR_ICON = "roaming_indicator_icon";
 
+
+        /**
+         * Whether to make statusbar black in order to keep contrast
+         * @hide
+         */
+        public static final String BLACK_STATUSBAR = "black_statusbar";
+
         /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.

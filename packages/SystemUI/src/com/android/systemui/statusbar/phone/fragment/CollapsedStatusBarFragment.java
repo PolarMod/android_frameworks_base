@@ -85,6 +85,8 @@ import com.android.systemui.util.CarrierConfigTracker;
 import com.android.systemui.util.CarrierConfigTracker.CarrierConfigChangedListener;
 import com.android.systemui.util.CarrierConfigTracker.DefaultDataSubscriptionChangedListener;
 import com.android.systemui.util.settings.SecureSettings;
+import android.provider.Settings.Global;
+import android.provider.Settings;
 import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;
@@ -108,6 +110,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public static final String TAG = "CollapsedStatusBarFragment";
     private static final String EXTRA_PANEL_STATE = "panel_state";
     public static final String STATUS_BAR_ICON_MANAGER_TAG = "status_bar_icon_manager";
+    private static final String BLACK_STATUSBAR =
+            "system:" + Settings.System.BLACK_STATUSBAR;
     public static final int FADE_IN_DURATION = 320;
     public static final int FADE_IN_DELAY = 50;
     private StatusBarFragmentComponent mStatusBarFragmentComponent;
@@ -140,10 +144,13 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private final DumpManager mDumpManager;
     private final StatusBarWindowStateController mStatusBarWindowStateController;
     private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
+    private final Integer mStatusBarDefaultBackground;
 
     private ClockController mClockController;
     private Context mContext;
     private boolean mIsClockBlacklisted;
+    private boolean mIsBlackStatusBar;
+    private View mStatusbarView;
 
     private List<String> mBlockedIcons = new ArrayList<>();
     private Map<Startable, Startable.State> mStartableStates = new ArrayMap<>();
@@ -242,6 +249,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mDumpManager = dumpManager;
         mStatusBarWindowStateController = statusBarWindowStateController;
         mKeyguardUpdateMonitor = keyguardUpdateMonitor;
+        mStatusBarDefaultBackground = Color.argb(0, 0, 0, 0);
     }
 
     @Override
@@ -260,7 +268,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_bar, container, false);
-        view.setBackgroundColor(Color.BLACK);
+        mStatusbarView = view;
+        if(mIsBlackStatusBar) {
+            view.setBackgroundColor(Color.BLACK);
+        }
         return view;
     }
 
@@ -300,6 +311,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
         mContext = getContext();
         Dependency.get(TunerService.class).addTunable(this, StatusBarIconController.ICON_HIDE_LIST);
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
 
         mSystemEventAnimator =
                 new StatusBarSystemEventAnimator(mEndSideContent, getResources());
@@ -395,11 +407,20 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        boolean wasClockBlacklisted = mIsClockBlacklisted;
-        mIsClockBlacklisted = StatusBarIconController.getIconHideList(
-                mContext, newValue).contains("clock");
-        if (wasClockBlacklisted && !mIsClockBlacklisted) {
-            showClock(false);
+        if(key == StatusBarIconController.ICON_HIDE_LIST) {
+            boolean wasClockBlacklisted = mIsClockBlacklisted;
+            mIsClockBlacklisted = StatusBarIconController.getIconHideList(
+                    mContext, newValue).contains("clock");
+            if (wasClockBlacklisted && !mIsClockBlacklisted) {
+                showClock(false);
+            }
+        } else if(key == BLACK_STATUSBAR){
+            mIsBlackStatusBar = TunerService.parseIntegerSwitch(newValue, false);
+            if(mIsBlackStatusBar){
+                mStatusbarView.setBackgroundColor(Color.BLACK);
+            } else {
+                mStatusbarView.setBackgroundColor(mStatusBarDefaultBackground);
+            }
         }
     }
 
