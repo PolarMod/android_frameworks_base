@@ -269,9 +269,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_bar, container, false);
         mStatusbarView = view;
-        if(mIsBlackStatusBar) {
-            view.setBackgroundColor(Color.BLACK);
-        }
+        updateBackgroundState();
         return view;
     }
 
@@ -416,11 +414,17 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             }
         } else if(key == BLACK_STATUSBAR){
             mIsBlackStatusBar = TunerService.parseIntegerSwitch(newValue, false);
-            if(mIsBlackStatusBar){
-                mStatusbarView.setBackgroundColor(Color.BLACK);
-            } else {
-                mStatusbarView.setBackgroundColor(mStatusBarDefaultBackground);
-            }
+            updateBackgroundState();
+        }
+    }
+
+    private void updateBackgroundState(){
+        if(mIsBlackStatusBar){
+            mStatusbarView.setBackgroundColor(Color.BLACK);
+            mStatusBarIconController.removeIconGroup(mDarkIconManager);
+        } else {
+            mStatusbarView.setBackgroundColor(mStatusBarDefaultBackground);
+            mStatusBarIconController.addIconGroup(mDarkIconManager);
         }
     }
 
