@@ -304,8 +304,8 @@ public interface StatusBarIconController {
         protected void onIconAdded(int index, String slot, boolean blocked,
                 StatusBarIconHolder holder) {
             StatusIconDisplayable view = addHolder(index, slot, blocked, holder);
-            //view.setStaticDrawableColor(mColor);
-            //view.setDecorColor(mColor);
+            view.setStaticDrawableColor(mColor);
+            view.setDecorColor(mColor);
         }
 
         public void setTint(int color) {
@@ -314,8 +314,8 @@ public interface StatusBarIconController {
                 View child = mGroup.getChildAt(i);
                 if (child instanceof StatusIconDisplayable) {
                     StatusIconDisplayable icon = (StatusIconDisplayable) child;
-                    //icon.setStaticDrawableColor(mColor);
-                    //icon.setDecorColor(mColor);
+                    icon.setStaticDrawableColor(mColor);
+                    icon.setDecorColor(mColor);
                 }
             }
         }
@@ -323,7 +323,7 @@ public interface StatusBarIconController {
         @Override
         protected DemoStatusIcons createDemoStatusIcons() {
             DemoStatusIcons icons = super.createDemoStatusIcons();
-            //icons.setColor(mColor);
+            icons.setColor(mColor);
             return icons;
         }
 
