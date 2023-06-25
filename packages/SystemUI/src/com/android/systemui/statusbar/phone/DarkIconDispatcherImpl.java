@@ -54,7 +54,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
             Context context,
             LightBarTransitionsController.Factory lightBarTransitionsControllerFactory,
             DumpManager dumpManager) {
-        mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tonee);
+        mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
 
         mTransitionsController = lightBarTransitionsControllerFactory.create(this);
