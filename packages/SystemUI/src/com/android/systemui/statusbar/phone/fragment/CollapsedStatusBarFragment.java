@@ -298,7 +298,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                 view.findViewById(R.id.statusIcons), StatusBarLocation.HOME);
         mDarkIconManager.setShouldLog(true);
         updateBlockedIcons();
-        mStatusBarIconController.addIconGroup(mDarkIconManager);
+        if(!mIsBlackStatusBar) {
+            mStatusBarIconController.addIconGroup(mDarkIconManager);
+        }
         mEndSideContent = mStatusBar.findViewById(R.id.status_bar_end_side_content);
         mClockController = mStatusBar.getClockController();
         mOngoingCallChip = mStatusBar.findViewById(R.id.ongoing_call_chip);
@@ -421,10 +423,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private void updateBackgroundState(){
         if(mIsBlackStatusBar){
             mStatusbarView.setBackgroundColor(Color.BLACK);
-            mStatusBarIconController.removeIconGroup(mDarkIconManager);
+            if(mDarkIconManager != NULL && mStatusBarIconController != NULL) {
+                mStatusBarIconController.removeIconGroup(mDarkIconManager);
+            }
         } else {
             mStatusbarView.setBackgroundColor(mStatusBarDefaultBackground);
-            mStatusBarIconController.addIconGroup(mDarkIconManager);
+            if(mDarkIconManager != NULL) {
+                mStatusBarIconController.addIconGroup(mDarkIconManager);
+            }
         }
     }
 

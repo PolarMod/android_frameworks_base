@@ -101,6 +101,9 @@ public class StatusBarIconControllerImpl implements Tunable,
     /** */
     @Override
     public void addIconGroup(IconManager group) {
+        if(group == null){
+            Log.e(TAG, "Not adding icon group. It is NULL!");
+        }
         for (IconManager existingIconManager : mIconGroups) {
             if (existingIconManager.mGroup == group.mGroup) {
                 Log.e(TAG, "Adding new IconManager for the same ViewGroup. This could cause "
@@ -109,6 +112,9 @@ public class StatusBarIconControllerImpl implements Tunable,
         }
 
         group.setController(this);
+        if(mIconGroups == null){
+            Log.e(TAG, "Not adding icon group. mIconsGroup is NULL!");
+        }
         mIconGroups.add(group);
         List<Slot> allSlots = mStatusBarIconList.getSlots();
         for (int i = 0; i < allSlots.size(); i++) {
