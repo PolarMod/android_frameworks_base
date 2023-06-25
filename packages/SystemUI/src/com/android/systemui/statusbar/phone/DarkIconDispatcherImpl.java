@@ -68,14 +68,14 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
 
     public void addDarkReceiver(DarkReceiver receiver) {
         mReceivers.put(receiver, receiver);
-        receiver.onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
+        //receiver.onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
     }
 
     public void addDarkReceiver(ImageView imageView) {
         DarkReceiver receiver = (area, darkIntensity, tint) -> imageView.setImageTintList(
                 ColorStateList.valueOf(getTint(mTintAreas, imageView, mIconTint)));
         mReceivers.put(imageView, receiver);
-        receiver.onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
+        //receiver.onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
     }
 
     public void removeDarkReceiver(DarkReceiver object) {
@@ -87,7 +87,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
     }
 
     public void applyDark(DarkReceiver object) {
-        mReceivers.get(object).onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
+        //mReceivers.get(object).onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
     }
 
     /**
@@ -105,7 +105,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
         if (darkAreas != null) {
             mTintAreas.addAll(darkAreas);
         }
-        applyIconTint();
+        //applyIconTint();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
         mDarkIntensity = darkIntensity;
         mIconTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 mLightModeIconColorSingleTone, mDarkModeIconColorSingleTone);
-        applyIconTint();
+        //applyIconTint();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
 
     private void applyIconTint() {
         for (int i = 0; i < mReceivers.size(); i++) {
-            mReceivers.valueAt(i).onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
+            //mReceivers.valueAt(i).onDarkChanged(mTintAreas, mDarkIntensity, mIconTint);
         }
     }
 
