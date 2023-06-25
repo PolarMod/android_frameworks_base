@@ -72,45 +72,58 @@ public interface StatusBarIconController {
      */
     int TAG_PRIMARY = 0;
 
-    /** */
+    /**
+     *
+     */
     void addIconGroup(IconManager iconManager);
-    /** */
+
+    /**
+     *
+     */
     void removeIconGroup(IconManager iconManager);
 
-    /** Refresh the state of an IconManager by recreating the views */
+    /**
+     * Refresh the state of an IconManager by recreating the views
+     */
     void refreshIconGroup(IconManager iconManager);
 
     /**
      * Adds or updates an icon that comes from an active tile service.
-     *
+     * <p>
      * If the icon is null, the icon will be removed.
      */
     void setIconFromTile(String slot, @Nullable StatusBarIcon icon);
 
-    /** Removes an icon that had come from an active tile service. */
+    /**
+     * Removes an icon that had come from an active tile service.
+     */
     void removeIconForTile(String slot);
 
     /**
      * Adds or updates an icon for the given slot for **internal system icons**.
-     *
+     * <p>
      * TODO(b/265307726): Re-name this to `setInternalIcon`.
      */
     void setIcon(String slot, int resourceId, CharSequence contentDescription);
 
-    /** */
+    /**
+     *
+     */
     void setWifiIcon(String slot, WifiIconState state);
 
     /**
      * Sets up a wifi icon using the new data pipeline. No effect if the wifi icon has already been
      * set up (inflated and added to the view hierarchy).
-     *
+     * <p>
      * This method completely replaces {@link #setWifiIcon} with the information from the new wifi
      * data pipeline. Icons will automatically keep their state up to date, so we don't have to
      * worry about funneling state objects through anymore.
      */
     void setNewWifiIcon();
 
-    /** */
+    /**
+     *
+     */
     void setMobileIcons(String slot, List<MobileIconState> states);
 
     /**
@@ -119,6 +132,7 @@ public interface StatusBarIconController {
      * to worry about funneling MobileIconState objects through anymore.
      */
     void setNewMobileIconSubIds(List<Integer> subIds);
+
     /**
      * Display the no calling & SMS icons.
      */
@@ -154,7 +168,9 @@ public interface StatusBarIconController {
     // TODO: See if we can rename this tunable name.
     String ICON_HIDE_LIST = "icon_blacklist";
 
-    /** Reads the default hide list from config value unless hideListStr is provided. */
+    /**
+     * Reads the default hide list from config value unless hideListStr is provided.
+     */
     static ArraySet<String> getIconHideList(Context context, String hideListStr) {
         ArraySet<String> ret = new ArraySet<>();
         String[] hideList = hideListStr == null
@@ -174,6 +190,7 @@ public interface StatusBarIconController {
     class DarkIconManager extends IconManager {
         private final DarkIconDispatcher mDarkIconDispatcher;
         private int mIconHPadding;
+        private boolean mEnabled;
 
         public DarkIconManager(
                 LinearLayout linearLayout,
@@ -192,13 +209,16 @@ public interface StatusBarIconController {
             mIconHPadding = mContext.getResources().getDimensionPixelSize(
                     R.dimen.status_bar_icon_padding);
             mDarkIconDispatcher = darkIconDispatcher;
+            mEnabled = false;
         }
 
         @Override
         protected void onIconAdded(int index, String slot, boolean blocked,
-                StatusBarIconHolder holder) {
+                                   StatusBarIconHolder holder) {
             StatusIconDisplayable view = addHolder(index, slot, blocked, holder);
-            mDarkIconDispatcher.addDarkReceiver((DarkReceiver) view);
+            if (mEnabled) {
+                mDarkIconDispatcher.addDarkReceiver((DarkReceiver) view);
+            }
         }
 
         @Override
@@ -212,21 +232,27 @@ public interface StatusBarIconController {
         @Override
         protected void destroy() {
             for (int i = 0; i < mGroup.getChildCount(); i++) {
-                mDarkIconDispatcher.removeDarkReceiver((DarkReceiver) mGroup.getChildAt(i));
+                if(mEnabled){
+                    mDarkIconDispatcher.removeDarkReceiver((DarkReceiver) mGroup.getChildAt(i));
+                }
             }
             mGroup.removeAllViews();
         }
 
         @Override
         protected void onRemoveIcon(int viewIndex) {
-            mDarkIconDispatcher.removeDarkReceiver((DarkReceiver) mGroup.getChildAt(viewIndex));
+            if(mEnabled){
+                mDarkIconDispatcher.removeDarkReceiver((DarkReceiver) mGroup.getChildAt(viewIndex));
+            }
             super.onRemoveIcon(viewIndex);
         }
 
         @Override
         public void onSetIcon(int viewIndex, StatusBarIcon icon) {
             super.onSetIcon(viewIndex, icon);
-            mDarkIconDispatcher.applyDark((DarkReceiver) mGroup.getChildAt(viewIndex));
+            if(mEnabled){
+                mDarkIconDispatcher.applyDark((DarkReceiver) mGroup.getChildAt(viewIndex));
+            }
         }
 
         @Override
@@ -302,7 +328,7 @@ public interface StatusBarIconController {
 
         @Override
         protected void onIconAdded(int index, String slot, boolean blocked,
-                StatusBarIconHolder holder) {
+                                   StatusBarIconHolder holder) {
             StatusIconDisplayable view = addHolder(index, slot, blocked, holder);
             view.setStaticDrawableColor(mColor);
             view.setDecorColor(mColor);
@@ -447,12 +473,12 @@ public interface StatusBarIconController {
         }
 
         protected void onIconAdded(int index, String slot, boolean blocked,
-                StatusBarIconHolder holder) {
+                                   StatusBarIconHolder holder) {
             addHolder(index, slot, blocked, holder);
         }
 
         protected StatusIconDisplayable addHolder(int index, String slot, boolean blocked,
-                StatusBarIconHolder holder) {
+                                                  StatusBarIconHolder holder) {
             // This is a little hacky, and probably regrettable, but just set `blocked` on any icon
             // that is in our blocked list, then we'll never see it
             if (mBlockList.contains(slot)) {
@@ -480,7 +506,7 @@ public interface StatusBarIconController {
 
         @VisibleForTesting
         protected StatusBarIconView addIcon(int index, String slot, boolean blocked,
-                StatusBarIcon icon) {
+                                            StatusBarIcon icon) {
             StatusBarIconView view = onCreateStatusBarIconView(slot, blocked);
             view.set(icon);
             mGroup.addView(view, index, onCreateLayoutParams());
@@ -596,7 +622,7 @@ public interface StatusBarIconController {
                             mMobileIconsViewModel.getLogger(),
                             slot,
                             mMobileIconsViewModel.viewModelForSub(subId, mLocation)
-                        );
+                    );
         }
 
         protected LinearLayout.LayoutParams onCreateLayoutParams() {
