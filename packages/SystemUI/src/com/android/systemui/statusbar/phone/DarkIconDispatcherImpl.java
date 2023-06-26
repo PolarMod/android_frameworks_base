@@ -80,6 +80,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
         } else {
             mDarkModeIconColorSingleTone = mTransparentStatusBarIconColor;
         }
+        applyIconTint();
     }
 
     @Override
