@@ -52,6 +52,8 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
     private float mDarkIntensity;
     private int mDarkModeIconColorSingleTone;
     private int mLightModeIconColorSingleTone;
+    private int mBlackStatusBarContrastColor;
+    private int mTransparentStatusBarIconColor;
 
     /**
      */
@@ -60,8 +62,10 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
             Context context,
             LightBarTransitionsController.Factory lightBarTransitionsControllerFactory,
             DumpManager dumpManager) {
-        mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mBlackStatusBarContrastColor = context.getColor(R.color.light_mode_icon_color_single_tone);
+        mTransparentStatusBarIconColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
 
         Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
 
@@ -72,9 +76,9 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
 
     private void setStatusBarBlackState(boolean isBlack){
         if(isBlack){
-            mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
+            mDarkModeIconColorSingleTone = mBlackStatusBarContrastColor;
         } else {
-            mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
+            mDarkModeIconColorSingleTone = mTransparentStatusBarIconColor;
         }
     }
 
