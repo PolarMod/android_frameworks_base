@@ -26,6 +26,10 @@ import android.widget.ImageView;
 import com.android.systemui.R;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dump.DumpManager;
+import android.provider.Settings.Global;
+import android.provider.Settings;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.Dependency;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -36,11 +40,13 @@ import javax.inject.Inject;
  */
 @SysUISingleton
 public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
-        LightBarTransitionsController.DarkIntensityApplier {
+        LightBarTransitionsController.DarkIntensityApplier, TunerService.Tunable  {
 
     private final LightBarTransitionsController mTransitionsController;
     private final ArrayList<Rect> mTintAreas = new ArrayList<>();
     private final ArrayMap<Object, DarkReceiver> mReceivers = new ArrayMap<>();
+    private static final String BLACK_STATUSBAR =
+            "system:" + Settings.System.BLACK_STATUSBAR;
 
     private int mIconTint = DEFAULT_ICON_TINT;
     private float mDarkIntensity;
@@ -57,9 +63,25 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
         mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
 
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
+
         mTransitionsController = lightBarTransitionsControllerFactory.create(this);
 
         dumpManager.registerDumpable(getClass().getSimpleName(), this);
+    }
+
+    private void setStatusBarBlackState(boolean isBlack){
+        if(isBlack){
+            mDarkModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
+        } else {
+            mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
+        }
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        boolean isBlackStatusBar = TunerService.parseIntegerSwitch(newValue, false);
+        setStatusBarBlackState(isBlackStatusBar);
     }
 
     public LightBarTransitionsController getTransitionsController() {
