@@ -423,14 +423,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private void updateBackgroundState(){
         if(mIsBlackStatusBar){
             mStatusbarView.setBackgroundColor(Color.BLACK);
-            if(mDarkIconManager != null && mStatusBarIconController != null) {
-                mStatusBarIconController.removeIconGroup(mDarkIconManager);
-            }
         } else {
             mStatusbarView.setBackgroundColor(mStatusBarDefaultBackground);
-            if(mDarkIconManager != null) {
-                mStatusBarIconController.addIconGroup(mDarkIconManager);
-            }
         }
     }
 
