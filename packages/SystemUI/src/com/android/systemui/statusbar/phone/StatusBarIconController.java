@@ -389,9 +389,6 @@ public interface StatusBarIconController {
 
         protected ArrayList<String> mBlockList = new ArrayList<>();
 
-        private final boolean mNewIconStyle;
-        private final boolean mShowNotificationCount;
-
         private boolean mOldStyleType;
 
         private static final String USE_OLD_MOBILETYPE =
