@@ -51,7 +51,7 @@ import java.util.ArrayList;
  * View group for the mobile icon in the status bar
  */
 public class StatusBarMobileView extends BaseStatusBarFrameLayout implements DarkReceiver,
-        StatusIconDisplayable {
+        StatusIconDisplayable, TunerService.Tunable {
     private static final String TAG = "StatusBarMobileView";
 
     /// Used to show etc dots
@@ -100,13 +100,13 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
         v.setSlot(slot);
         v.init();
         v.setVisibleState(STATE_ICON);
-        mIsBlackStatusbar = false;
-        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
         return v;
     }
 
     public StatusBarMobileView(Context context) {
         super(context);
+        mIsBlackStatusbar = false;
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
     }
 
     public StatusBarMobileView(Context context, AttributeSet attrs) {
@@ -282,7 +282,7 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     public void onDarkChanged(ArrayList<Rect> areas, float darkIntensity, int tint) {
         float intensity = 0;
         if(!mIsBlackStatusbar) {
-            intensity = DarkIconDispatcher.isInAreas(areas, this) ? darkIntensity : 0;
+            intensity = isInAreas(areas, this) ? darkIntensity : 0;
         }
         mMobileDrawable.setTintList(
                 ColorStateList.valueOf(mDualToneHandler.getSingleColor(intensity)));
