@@ -72,17 +72,19 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     private boolean mOldStyleType;
     private ImageView mMobileTypeSmall;
 
+    private boolean mIsBlackStatusbar;
+
     /**
      * Designated constructor
-     *
+     * <p>
      * This view is special, in that it is the only view in SystemUI that allows for a configuration
      * override on a MCC/MNC-basis. This means that for every mobile view inflated, we have to
      * construct a context with that override, since the resource system doesn't have a way to
      * handle this for us.
      *
      * @param context A context with resources configured by MCC/MNC
-     * @param slot The string key defining which slot this icon refers to. Always "mobile" for the
-     *             mobile icon
+     * @param slot    The string key defining which slot this icon refers to. Always "mobile" for the
+     *                mobile icon
      */
     public static StatusBarMobileView fromContext(
             Context context,
@@ -209,7 +211,7 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
         ViewGroup.LayoutParams p = mMobileSignalType.getLayoutParams();
         if (small) {
             p.width = mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_mobile_signal_width);
+                    R.dimen.status_bar_mobile_signal_width);
         } else {
             p.width = mContext.getResources().getDimensionPixelSize(
                     R.dimen.status_bar_mobile_signal_with_type_width);
@@ -267,7 +269,10 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
 
     @Override
     public void onDarkChanged(ArrayList<Rect> areas, float darkIntensity, int tint) {
-        float intensity = isInAreas(areas, this) ? darkIntensity : 0;
+        float intensity = 0;
+        if (mIsBlackStatusbar) {
+            intensity = isInAreas(areas, this) ? darkIntensity : 0;
+        }
         mMobileDrawable.setTintList(
                 ColorStateList.valueOf(mDualToneHandler.getSingleColor(intensity)));
         ColorStateList color = ColorStateList.valueOf(getTint(areas, this, tint));
@@ -337,12 +342,13 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
 
     /**
      * Forces the state to be hidden (views will be GONE) and if necessary updates the layout.
-     *
+     * <p>
      * Makes sure that the {@link StatusBarIconController} cannot make it visible while this flag
      * is enabled.
+     *
      * @param forceHidden {@code true} if the icon should be GONE in its view regardless of its
-     *                                state.
-     *               {@code false} if the icon should show as determined by its controller.
+     *                    state.
+     *                    {@code false} if the icon should show as determined by its controller.
      */
     public void forceHidden(boolean forceHidden) {
         if (mForceHidden != forceHidden) {
@@ -427,5 +433,10 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
         mMobileType.setVisibility(View.GONE);
         mMobileTypeSmall.setVisibility(View.GONE);
         setMobileSignalWidth(true);
+    }
+
+    public void setBlackStatusbar(boolean isBlack) {
+        Log.d(TAG, "Set mIsBlackStatusbar to " + isBlack);
+        mIsBlackStatusbar = isBlack;
     }
 }

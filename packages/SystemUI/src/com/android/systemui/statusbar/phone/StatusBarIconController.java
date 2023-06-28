@@ -390,9 +390,12 @@ public interface StatusBarIconController {
         protected ArrayList<String> mBlockList = new ArrayList<>();
 
         private boolean mOldStyleType;
+        private boolean mBlackStatusBar;
 
         private static final String USE_OLD_MOBILETYPE =
             "system:" + Settings.System.USE_OLD_MOBILETYPE;
+        private static final String BLACK_STATUSBAR =
+                "system:" + Settings.System.BLACK_STATUSBAR;
 
         public IconManager(
                 ViewGroup group,
@@ -496,6 +499,7 @@ public interface StatusBarIconController {
             view.set(icon);
             mGroup.addView(view, index, onCreateLayoutParams());
             Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
+            Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
             return view;
         }
 
@@ -755,6 +759,10 @@ public interface StatusBarIconController {
                         TunerService.parseIntegerSwitch(newValue, false);
                     updateOldStyleMobileDataIcons();
                     break;
+                case BLACK_STATUSBAR:
+                    mBlackStatusBar = TunerService.parseIntegerSwitch(newValue, false);
+                    updateBlackStatubarIcons();
+                    break;
                 default:
                     break;
             }
@@ -765,6 +773,15 @@ public interface StatusBarIconController {
                 View child = mGroup.getChildAt(i);
                 if (child instanceof StatusBarMobileView) {
                     ((StatusBarMobileView) child).updateDisplayType(mOldStyleType);
+                }
+            }
+        }
+
+        private void updateBlackStatubarIcons() {
+            for (int i = 0; i < mGroup.getChildCount(); i++) {
+                View child = mGroup.getChildAt(i);
+                if (child instanceof StatusBarMobileView) {
+                    ((StatusBarMobileView) child).setBlackStatusbar(mBlackStatusBar);
                 }
             }
         }
