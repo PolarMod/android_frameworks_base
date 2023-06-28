@@ -270,7 +270,7 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     @Override
     public void onDarkChanged(ArrayList<Rect> areas, float darkIntensity, int tint) {
         float intensity = 0;
-        if (mIsBlackStatusbar) {
+        if (!mIsBlackStatusbar) {
             intensity = isInAreas(areas, this) ? darkIntensity : 0;
         }
         mMobileDrawable.setTintList(
