@@ -33,9 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.provider.Settings;
-import com.android.systemui.tuner.TunerService;
-import com.android.systemui.Dependency;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.graph.SignalDrawable;
@@ -73,9 +70,6 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     private boolean mForceHidden;
 
     private boolean mOldStyleType;
-    private boolean mIsBlackStatusbar;
-    private static final String BLACK_STATUSBAR =
-            "system:" + Settings.System.BLACK_STATUSBAR;
     private ImageView mMobileTypeSmall;
 
     /**
@@ -100,8 +94,6 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
         v.setSlot(slot);
         v.init();
         v.setVisibleState(STATE_ICON);
-        mIsBlackStatusbar = false;
-        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
         return v;
     }
 
@@ -274,16 +266,8 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     }
 
     @Override
-    public void onTuningChanged(String key, String newValue) {
-        mIsBlackStatusbar = TunerService.parseIntegerSwitch(newValue, false);
-    }
-
-    @Override
     public void onDarkChanged(ArrayList<Rect> areas, float darkIntensity, int tint) {
-        float intensity = 0;
-        if(!mIsBlackStatusbar) {
-            intensity = DarkIconDispatcher.isInAreas(areas, this) ? darkIntensity : 0;
-        }
+        float intensity = isInAreas(areas, this) ? darkIntensity : 0;
         mMobileDrawable.setTintList(
                 ColorStateList.valueOf(mDualToneHandler.getSingleColor(intensity)));
         ColorStateList color = ColorStateList.valueOf(getTint(areas, this, tint));
