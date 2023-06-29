@@ -209,7 +209,7 @@ public class OmniJawsClient {
         }
         mCachedInfo.iconPack = Settings.System.getString(
                 mContext.getContentResolver(),
-                Settings.System.OMNIJAWS_WEATH_ICON_PACK
+                Settings.System.OMNIJAWS_WEATHER_ICON_PACK
         );
         try {
             mCachedInfo = null;
