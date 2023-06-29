@@ -207,10 +207,6 @@ public class OmniJawsClient {
             mCachedInfo = null;
             return;
         }
-        mCachedInfo.iconPack = Settings.System.getString(
-                mContext.getContentResolver(),
-                Settings.System.OMNIJAWS_WEATHER_ICON_PACK
-        );
         try {
             mCachedInfo = null;
             Cursor c = mContext.getContentResolver().query(WEATHER_URI, WEATHER_PROJECTION,
@@ -262,6 +258,10 @@ public class OmniJawsClient {
                             mCachedInfo.tempUnits = getTemperatureUnit();
                             mCachedInfo.windUnits = getWindUnit();
                             mCachedInfo.provider = c.getString(2);
+                            mCachedInfo.iconPack = Settings.System.getString(
+                                    mContext.getContentResolver(),
+                                    Settings.System.OMNIJAWS_WEATHER_ICON_PACK
+                            );
                         }
                     }
                 } finally {
