@@ -1,20 +1,20 @@
 /*
-* Copyright (C) 2021 The OmniROM Project
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ * Copyright (C) 2021 The OmniROM Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package com.android.internal.util.polar;
 
 import java.text.DecimalFormat;
@@ -75,7 +75,7 @@ public class OmniJawsClient {
             "pin_wheel"
     };
 
-    final String[] SETTINGS_PROJECTION = new String[] {
+    final String[] SETTINGS_PROJECTION = new String[]{
             "enabled",
             "units",
             "provider",
@@ -105,7 +105,7 @@ public class OmniJawsClient {
         public String iconPack;
 
         public String toString() {
-            return city + ":" + new Date(timeStamp) + ": " + windSpeed + ":" + windDirection + ":" +conditionCode + ":" + temp + ":" + humidity + ":" + condition + ":" + tempUnits + ":" + windUnits + ": " + forecasts + ": " + iconPack;
+            return city + ":" + new Date(timeStamp) + ": " + windSpeed + ":" + windDirection + ":" + conditionCode + ":" + temp + ":" + humidity + ":" + condition + ":" + tempUnits + ":" + windUnits + ": " + forecasts + ": " + iconPack;
         }
 
         public String getLastUpdateTime() {
@@ -122,14 +122,19 @@ public class OmniJawsClient {
         public String date;
 
         public String toString() {
-            return "[" + low + ":" + high + ":" +conditionCode + ":" + condition + ":" + date + "]";
+            return "[" + low + ":" + high + ":" + conditionCode + ":" + condition + ":" + date + "]";
         }
     }
 
     public static interface OmniJawsObserver {
         public void weatherUpdated();
+
         public void weatherError(int errorReason);
-        default public void updateSettings() {};
+
+        default public void updateSettings() {
+        }
+
+        ;
     }
 
     private class WeatherUpdateReceiver extends BroadcastReceiver {
@@ -202,6 +207,10 @@ public class OmniJawsClient {
             mCachedInfo = null;
             return;
         }
+        mCachedInfo.iconPack = Settings.System.getString(
+                mContext.getContentResolver(),
+                Settings.System.OMNIJAWS_WEATH_ICON_PACK
+        );
         try {
             mCachedInfo = null;
             Cursor c = mContext.getContentResolver().query(WEATHER_URI, WEATHER_PROJECTION,
@@ -242,7 +251,7 @@ public class OmniJawsClient {
                 }
             }
             c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
-                        null, null, null);
+                    null, null, null);
             if (c != null) {
                 try {
                     int count = c.getCount();
@@ -253,7 +262,6 @@ public class OmniJawsClient {
                             mCachedInfo.tempUnits = getTemperatureUnit();
                             mCachedInfo.windUnits = getWindUnit();
                             mCachedInfo.provider = c.getString(2);
-                            mCachedInfo.iconPack = c.getString(4);
                         }
                     }
                 } finally {
@@ -336,7 +344,7 @@ public class OmniJawsClient {
             if (d != null) {
                 return d;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "getWeatherConditionImage", e);
         }
         Log.w(TAG, "Failed to get condition image for " + conditionCode);
@@ -394,12 +402,13 @@ public class OmniJawsClient {
     }
 
     private String getWindUnit() {
-        return mMetric ? "km/h":"mph";
+        return mMetric ? "km/h" : "mph";
     }
 
     private void updateSettings() {
         final String iconPack = mCachedInfo != null ? mCachedInfo.iconPack : null;
         if (TextUtils.isEmpty(iconPack)) {
+            Log.w(TAG, "Icon pack not set");
             loadDefaultIconsPackage();
         } else if (mSettingIconPackage == null || !iconPack.equals(mSettingIconPackage)) {
             mSettingIconPackage = iconPack;
