@@ -17,6 +17,8 @@ import com.android.systemui.plugins.DarkIconDispatcher;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.StatusIconDisplayable;
 
+import java.util.ArrayList;
+
 public class NetworkTrafficSB extends NetworkTraffic implements DarkReceiver, StatusIconDisplayable {
 
     public static final String SLOT = "networktraffic";
