@@ -214,7 +214,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
                     Settings.System.LOCKSCREEN_WEATHER_LOCATION), false, this,
                     UserHandle.USER_ALL);
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_WEATHER_STYLE), false, this,
+                    Settings.System.LOCKSCREEN_WEATHER_STYLE), true, this,
                     UserHandle.USER_ALL);
             updateShowWeatherSlice();
         }
@@ -232,7 +232,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
                     0, UserHandle.USER_CURRENT) != 0;
             mShowWeatherStyle = Settings.System.getIntForUser(mContentResolver,
                     Settings.System.LOCKSCREEN_WEATHER_STYLE,
-                    0, UserHandle.USER_CURRENT) == 0;
+                    1, UserHandle.USER_CURRENT) == 0;
         }
 
         @Override
