@@ -290,7 +290,7 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
                 break;
             case LOCKSCREEN_WEATHER_STYLE:
                 mPixelStyle =
-                        TunerService.parseIntegerSwitch(newValue, true);
+                        TunerService.parseIntegerSwitch(newValue, false);
                 updateWeatherView();
                 break;
             default:
