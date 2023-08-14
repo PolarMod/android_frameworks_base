@@ -183,7 +183,6 @@ public class PhoneStatusBarPolicy
     private AlarmManager.AlarmClockInfo mNextAlarm;
 
     private NfcAdapter mAdapter;
-    private final Context mContext;
 
     @Inject
     public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
