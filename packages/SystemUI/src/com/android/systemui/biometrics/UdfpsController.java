@@ -195,7 +195,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
 
     private UdfpsAnimation mUdfpsAnimation;
     private final int mUdfpsVendorCode;
-    private final boolean mScreenOffUdfps;
     @VisibleForTesting
     public static final VibrationAttributes UDFPS_VIBRATION_ATTRIBUTES =
             new VibrationAttributes.Builder()
