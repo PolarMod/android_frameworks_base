@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
-import android.database.ContentProvider;
 import android.hardware.biometrics.BiometricFingerprintConstants;
 import android.hardware.biometrics.BiometricOverlayConstants;
 import android.hardware.biometrics.SensorProperties;
@@ -196,7 +195,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
 
     private UdfpsAnimation mUdfpsAnimation;
     private final int mUdfpsVendorCode;
-
+    private final boolean mScreenOffUdfps;
     @VisibleForTesting
     public static final VibrationAttributes UDFPS_VIBRATION_ATTRIBUTES =
             new VibrationAttributes.Builder()
@@ -800,24 +799,12 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         udfpsShell.setUdfpsOverlayController(mUdfpsOverlayController);
         mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfpsVendorCode);
         updateScreenOffFodState();
-        mSecureSettings.registerContentObserver(Settings.Secure.SCREEN_OFF_UDFPS_ENABLED,
-            new ContentObserver(mainHandler) {
-                @Override
-                public void onChange(boolean selfChange, Uri uri) {
-                    if (uri.getLastPathSegment().equals(Settings.Secure.SCREEN_OFF_UDFPS_ENABLED)) {
-                        updateScreenOffFodState();
-                    }
-                }
-            }
-        );
         if (com.android.internal.util.polar.Utils.isPackageInstalled(mContext, "com.polar.udfps.animations")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
         }
     }
 
     private void updateScreenOffFodState() {
-        boolean isSupported = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_supportScreenOffUdfps);
         mScreenOffFod = false; /* stub */
     }
 
