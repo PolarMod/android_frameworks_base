@@ -805,7 +805,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
     }
 
     private void updateScreenOffFodState() {
-        mScreenOffFod = false; /* stub */
+        /* stub */
     }
 
     /**
