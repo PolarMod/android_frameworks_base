@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
+import android.database.ContentProvider;
 import android.hardware.biometrics.BiometricFingerprintConstants;
 import android.hardware.biometrics.BiometricOverlayConstants;
 import android.hardware.biometrics.SensorProperties;
@@ -43,6 +44,7 @@ import android.os.Process;
 import android.os.Trace;
 import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.RotationUtils;
 import android.view.LayoutInflater;
@@ -90,6 +92,8 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.Execution;
 import com.android.systemui.util.settings.SecureSettings;
 import com.android.systemui.util.time.SystemClock;
+
+import com.android.systemui.R;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -191,6 +195,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
     private final Set<Callback> mCallbacks = new HashSet<>();
 
     private UdfpsAnimation mUdfpsAnimation;
+    private final int mUdfpsVendorCode;
 
     @VisibleForTesting
     public static final VibrationAttributes UDFPS_VIBRATION_ATTRIBUTES =
@@ -813,7 +818,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
     private void updateScreenOffFodState() {
         boolean isSupported = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_supportScreenOffUdfps);
-        mScreenOffFod = isSupported && mSecureSettings.getInt(Settings.Secure.SCREEN_OFF_UDFPS_ENABLED, 1) == 1;
+        mScreenOffFod = false; /* stub */
     }
 
     /**
