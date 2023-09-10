@@ -267,7 +267,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.status_bar, container, false);
+        View view = inflater.inflate(R.layout.status_bar, container, false);
+        mStatusbarView = view;
+        updateBackgroundState();
+        return view;
     }
 
     @Override
