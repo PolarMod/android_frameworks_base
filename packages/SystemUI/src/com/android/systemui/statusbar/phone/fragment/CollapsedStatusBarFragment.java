@@ -413,7 +413,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             }
         } else if(key == BLACK_STATUSBAR){
             mIsBlackStatusBar = TunerService.parseIntegerSwitch(newValue, false);
-            updateBackgroundState();
+            //updateBackgroundState();
         }
     }
 
