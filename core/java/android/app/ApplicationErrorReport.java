@@ -167,7 +167,7 @@ public class ApplicationErrorReport implements Parcelable {
             String packageName, int appFlags) {
         // check if error reporting is enabled in secure settings
         int enabled = Settings.Global.getInt(context.getContentResolver(),
-                Settings.Global.SEND_ACTION_APP_ERROR, 1);
+                Settings.Global.SEND_ACTION_APP_ERROR, 0);
         if (enabled == 0) {
             return null;
         }
