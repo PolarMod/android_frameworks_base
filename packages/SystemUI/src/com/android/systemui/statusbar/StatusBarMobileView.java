@@ -41,6 +41,9 @@ import com.android.systemui.R;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
+import android.provider.Settings;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.Dependency;
 
 import java.util.ArrayList;
 
@@ -48,7 +51,7 @@ import java.util.ArrayList;
  * View group for the mobile icon in the status bar
  */
 public class StatusBarMobileView extends BaseStatusBarFrameLayout implements DarkReceiver,
-        StatusIconDisplayable {
+        StatusIconDisplayable, TunerService.Tunable {
     private static final String TAG = "StatusBarMobileView";
 
     /// Used to show etc dots
@@ -73,6 +76,8 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
     private ImageView mMobileTypeSmall;
 
     private boolean mIsBlackStatusbar;
+    private static final String BLACK_STATUSBAR =
+            "system:" + Settings.System.BLACK_STATUSBAR;
 
     /**
      * Designated constructor
@@ -101,14 +106,20 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
 
     public StatusBarMobileView(Context context) {
         super(context);
+        mIsBlackStatusbar = false;
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
     }
 
     public StatusBarMobileView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mIsBlackStatusbar = false;
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
     }
 
     public StatusBarMobileView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mIsBlackStatusbar = false;
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
     }
 
     @Override
@@ -439,4 +450,10 @@ public class StatusBarMobileView extends BaseStatusBarFrameLayout implements Dar
         Log.d(TAG, "Set mIsBlackStatusbar to " + isBlack);
         mIsBlackStatusbar = isBlack;
     }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        mIsBlackStatusbar = TunerService.parseIntegerSwitch(newValue, false);
+    }
+
 }
