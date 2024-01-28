@@ -51,6 +51,9 @@ import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.phone.userswitcher.StatusBarUserSwitcherContainer;
 import com.android.systemui.user.ui.binder.StatusBarUserChipViewBinder;
 import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel;
+import android.provider.Settings;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.Dependency;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -58,11 +61,13 @@ import java.util.ArrayList;
 /**
  * The header group on Keyguard.
  */
-public class KeyguardStatusBarView extends RelativeLayout {
+public class KeyguardStatusBarView extends RelativeLayout, TunerService.Tunable {
 
     private static final int LAYOUT_NONE = 0;
     private static final int LAYOUT_CUTOUT = 1;
     private static final int LAYOUT_NO_CUTOUT = 2;
+    private static final String BLACK_STATUSBAR =
+            "system:" + Settings.System.BLACK_STATUSBAR;
 
     private final ArrayList<Rect> mEmptyTintRect = new ArrayList<>();
 
@@ -73,6 +78,8 @@ public class KeyguardStatusBarView extends RelativeLayout {
     private BatteryMeterView mBatteryView;
     private StatusIconContainer mStatusIconContainer;
     private StatusBarUserSwitcherContainer mUserSwitcherContainer;
+
+    private boolean mStatusBarBlack = false;
 
     private boolean mKeyguardUserSwitcherEnabled;
     private boolean mKeyguardUserAvatarEnabled;
@@ -106,6 +113,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
 
     public KeyguardStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Dependency.get(TunerService.class).addTunable(this, BLACK_STATUSBAR);
     }
 
     @Override
@@ -125,6 +133,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
 
     /**
      * Should only be called from {@link KeyguardStatusBarViewController}
+     *
      * @param viewModel view model for the status bar user chip
      */
     void init(StatusBarUserChipViewModel viewModel) {
@@ -256,7 +265,9 @@ public class KeyguardStatusBarView extends RelativeLayout {
         }
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     WindowInsets updateWindowInsets(
             WindowInsets insets,
             StatusBarContentInsetsProvider insetsProvider) {
@@ -344,12 +355,16 @@ public class KeyguardStatusBarView extends RelativeLayout {
         return true;
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     void onUserInfoChanged(Drawable picture) {
         mMultiUserAvatar.setImageDrawable(picture);
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     void onBatteryLevelChanged(boolean charging) {
         if (mBatteryCharging != charging) {
             mBatteryCharging = charging;
@@ -433,13 +448,17 @@ public class KeyguardStatusBarView extends RelativeLayout {
         return false;
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     void onThemeChanged(StatusBarIconController.TintedIconManager iconManager) {
         mBatteryView.setColorsFromContext(mContext);
         updateIconsAndTextColors(iconManager);
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     void onOverlayChanged() {
         int theme = Utils.getThemeAttr(mContext, com.android.internal.R.attr.textAppearanceSmall);
         mCarrierLabel.setTextAppearance(theme);
@@ -452,11 +471,16 @@ public class KeyguardStatusBarView extends RelativeLayout {
     }
 
     private void updateIconsAndTextColors(StatusBarIconController.TintedIconManager iconManager) {
-        @ColorInt int textColor = Utils.getColorAttrDefaultColor(mContext,
-                R.attr.wallpaperTextColor);
-        @ColorInt int iconColor = Utils.getColorStateListDefaultColor(mContext,
-                Color.luminance(textColor) < 0.5 ? R.color.dark_mode_icon_color_single_tone :
-                R.color.light_mode_icon_color_single_tone);
+        @ColorInt int textColor = 0;
+        if (mStatusBarBlack) {
+            textColor = Color.WHITE;
+        } else {
+            @ColorInt int textColor = Utils.getColorAttrDefaultColor(mContext,
+                    R.attr.wallpaperTextColor);
+            @ColorInt int iconColor = Utils.getColorStateListDefaultColor(mContext,
+                    Color.luminance(textColor) < 0.5 ? R.color.dark_mode_icon_color_single_tone :
+                            R.color.light_mode_icon_color_single_tone);
+        }
         float intensity = textColor == Color.WHITE ? 0 : 1;
         mCarrierLabel.setTextColor(iconColor);
 
@@ -493,7 +517,9 @@ public class KeyguardStatusBarView extends RelativeLayout {
         }
     }
 
-    /** Should only be called from {@link KeyguardStatusBarViewController}. */
+    /**
+     * Should only be called from {@link KeyguardStatusBarViewController}.
+     */
     void dump(PrintWriter pw, String[] args) {
         pw.println("KeyguardStatusBarView:");
         pw.println("  mBatteryCharging: " + mBatteryCharging);
@@ -512,7 +538,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
 
     /**
      * Set the clipping on the top of the view.
-     *
+     * <p>
      * Should only be called from {@link KeyguardStatusBarViewController}.
      */
     void setTopClipping(int topClipping) {
@@ -532,5 +558,10 @@ public class KeyguardStatusBarView extends RelativeLayout {
         Trace.beginSection("KeyguardStatusBarView#onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Trace.endSection();
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        mStatusBarBlack = TunerService.parseIntegerSwitch(newValue, false);
     }
 }
