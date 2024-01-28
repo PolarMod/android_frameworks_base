@@ -30,6 +30,7 @@ import android.os.Trace;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.util.Log;
 import android.view.DisplayCutout;
 import android.view.Gravity;
 import android.view.View;
@@ -68,6 +69,7 @@ public class KeyguardStatusBarView extends RelativeLayout, TunerService.Tunable 
     private static final int LAYOUT_NO_CUTOUT = 2;
     private static final String BLACK_STATUSBAR =
             "system:" + Settings.System.BLACK_STATUSBAR;
+    private static final String TAG = "KeyguardStatusBarView";
 
     private final ArrayList<Rect> mEmptyTintRect = new ArrayList<>();
 
@@ -562,6 +564,10 @@ public class KeyguardStatusBarView extends RelativeLayout, TunerService.Tunable 
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        mStatusBarBlack = TunerService.parseIntegerSwitch(newValue, false);
+        if(key == BLACK_STATUSBAR) {
+            mStatusBarBlack = TunerService.parseIntegerSwitch(newValue, false);
+        } else {
+            Log.e(TAG, "Unknown tuning key: " + key);
+        }
     }
 }
