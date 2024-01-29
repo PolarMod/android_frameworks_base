@@ -477,12 +477,12 @@ public class KeyguardStatusBarView extends RelativeLayout implements TunerServic
         if (mStatusBarBlack) {
             textColor = Color.WHITE;
         } else {
-            @ColorInt int textColor = Utils.getColorAttrDefaultColor(mContext,
+            textColor = Utils.getColorAttrDefaultColor(mContext,
                     R.attr.wallpaperTextColor);
-            @ColorInt int iconColor = Utils.getColorStateListDefaultColor(mContext,
-                    Color.luminance(textColor) < 0.5 ? R.color.dark_mode_icon_color_single_tone :
-                            R.color.light_mode_icon_color_single_tone);
         }
+        @ColorInt int iconColor = Utils.getColorStateListDefaultColor(mContext,
+                Color.luminance(textColor) < 0.5 ? R.color.dark_mode_icon_color_single_tone :
+                        R.color.light_mode_icon_color_single_tone);
         float intensity = textColor == Color.WHITE ? 0 : 1;
         mCarrierLabel.setTextColor(iconColor);
 
