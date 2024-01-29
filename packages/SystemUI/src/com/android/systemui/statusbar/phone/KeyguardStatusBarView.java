@@ -62,7 +62,7 @@ import java.util.ArrayList;
 /**
  * The header group on Keyguard.
  */
-public class KeyguardStatusBarView extends RelativeLayout, TunerService.Tunable {
+public class KeyguardStatusBarView extends RelativeLayout implements TunerService.Tunable {
 
     private static final int LAYOUT_NONE = 0;
     private static final int LAYOUT_CUTOUT = 1;
